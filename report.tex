@@ -3,9 +3,8 @@
 
 \begin{document}
 	\title{Iterations on the slimpletic integrator and its applications to physical systems}
-	\author{J D Coles$^1$\todo{I am assuming we just quote ourselves for the}}
+	\author{J D Coles$^1$\todo{I am assuming we just quote ourselves for the report?}}
 	\address{$^1$ Department of Physics, University of Bath, Claverton Down, Bath BA2 7AY, UK}
-	
 \begin{abstract}
 \todo{Abstract}
 \lipsum[1]
@@ -14,17 +13,67 @@
 \ioptwocol
 
 \section{Introduction}
+% Heres all the knowledge you need to understand shit
 
-\lipsum
+How do we talk about the SI before we talk about the maths?
+\begin{enumerate}
+	\item What is a slimpletic integrator
+	\item What are they useful for
+	\item What is the need to auto-diff and a higher speed one
+	\item What \PHYSICS does this let us do?
+	\item How do we get to autodiff
+	\item Introduce the physical system which will be the through line of our model.
+\end{enumerate}
+
+% Slimpletic Integrator Maths
+% Need to look at the papers before DT's
+
+% Do we need to talk about the JAX things in the "understanding" component? Probably only briefly as its not **PHYSICS** sooooo
+% Will need to talk about auto-diff. Link to JAX papers.
+% Intro to gradient descent
+	% Loss functions, what are they
+
+\section{Method}
+% What is the method for the JAX components
+% I imagine learning from the DLA report the answer is... don't
+% So what do we need to mention here? Probably the physical systems and methods used to measure performance, system size, etc.
+% Then discuss auto-diff and the physical systems we chose to fit toward and why.
+% How do the systems we fit towards relate to the through-line system?
+% How we compare different loww
+
+% What we did, how we built loss functios
 
 \section{Results and Specific Discussion}
+% This is the shit we got out of it
+% These are the error graphs similar to DTs paper (cite DT here)
+% We got X% speed up
+% This means we can model Y% larger systems for X longer
+% Results of auto diff results with different loss functions
+% If we can make those nice convergence/non-convergence Mandlebrot plots try that!
 
 \lipsum
 
 \section{General Discussion}
+% What do the pretty graphs actually mean in a broad sense
+% Pull together with the background
+% PHYSICS!!!
+
+% Is this where we will mention the "future work" of NNs?
 
 \lipsum
 
+\section{Conclusion}
+
+\ack
+
+\begin{enumerate}
+	\item Tsang, resources
+	\item Do we need to reference the Royal Society?
+	\item Mathilda, Dunkun
+\end{enumerate}
+
+\section*{References}
 \bibliographystyle{iopart-num}
 \bibliography{references}
+
 \end{document}
