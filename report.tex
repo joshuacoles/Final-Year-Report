@@ -1,9 +1,12 @@
 \documentclass[10pt]{iopart}
 \include{setup}
 
+\def\SI{Slimpletic Integrator }
+\def\autodiff{automatic-differentiation }
+
 \begin{document}
 \ioptwocol[{
-\title{Iterations on the slimpletic integrator and its applications to physical systems}
+\title{Iterations on the slimpletic integrator and its applications to physically informed loss functions}
 \author{J D Coles$^1$}
 \address{$^1$ Department of Physics, University of Bath, Claverton Down, Bath BA2 7AY, UK}
 \begin{abstract}
@@ -13,6 +16,23 @@
 
 \section{Introduction}
 % Heres all the knowledge you need to understand shit
+
+% Following DT's SI paper, we start with top line introductions of the main areas of our paper
+
+Neural networks (NNs) are becoming an increasingly important part of the scientific discipline as they show wider application to data intensive problems and make progress where computational methods have proved otherwise intractable. % TODO: Expand
+
+The loss function, or equivalently reward functions, is used to train a model by optimising its parameters with respect to the aggregate loss over a large collection of known inputs and outputs. They are the component of model creation which ground the model in a given problem. Their construction varies but they generally exhibit some characteristics as discussed later in this paper. % TODO: This feels bitty and a bit undergrad
+
+The \SI (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of the the Sympletic Integrator, a conservative variational integrator, which enables numerical integration of non-conservative systems with well defined bounds on the energy in the error of the system. These are based on the non-conservative action approach developed by Galley and Galley et al \todo{cite and maybe namecite}.
+
+Automatic-differentiation \todo{do we capitalise both words?} techniques are a collection of computational methods for the determination of the differential of large classes of \enquote{regular} scientific code in an efficient and accurate manner.
+
+% Link these together into a cohesive summary.
+
+In this paper we focus on taking the existing mathematical framework of the \SI and adapting it to use more advanced computational methods and making it amenable to \autodiff to enable a wide class of new applications. Key among these is its use as the baseline of a number of physics based \todo{keep consistent terminology here. I quite like physics based} loss functions which we will compare for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight.
+
+
+% TODO: I note that DT doesn't actually talk about his paper in the introduction? Actually he does at the end
 
 How do we talk about the SI before we talk about the maths?
 \begin{enumerate}
@@ -24,7 +44,14 @@ How do we talk about the SI before we talk about the maths?
 	\item Introduce the physical system which will be the through line of our model.
 \end{enumerate}
 
-\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}
+% TODO Where do we put applications of autodiff?
+\subsection{The \SI}
+
+Symplectic integrators are a class of numerical integrators for Hamiltonian systems which preserve the canonical symplectic 2-form of the system.% Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
+This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others \todo{Cite papers, some from DT2, some of my own}. This is due to their property of preserving, or near preserving, the constants of motion of a system over a large number of integration steps.
+
+\subsection{Non-Conservative Actions}
+\subsection{Loss functions}
 
 % Slimpletic Integrator Maths
 % Need to look at the papers before DT's
@@ -54,7 +81,7 @@ How do we talk about the SI before we talk about the maths?
 % Results of auto diff results with different loss functions
 % If we can make those nice convergence/non-convergence Mandlebrot plots try that!
 
-\lipsum
+%\lipsum
 
 \section{General Discussion}
 % What do the pretty graphs actually mean in a broad sense
@@ -63,7 +90,7 @@ How do we talk about the SI before we talk about the maths?
 
 % Is this where we will mention the "future work" of NNs?
 
-\lipsum
+%\lipsum
 
 \section{Conclusion}
 
