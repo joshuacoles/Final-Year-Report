@@ -16,7 +16,7 @@ jobs:
     - name: Install LaTeX
       run: |
         sudo apt-get update
-        sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended
+        sudo apt-get install -y texlive-latex-base texlive-science texlive-latex-extra texlive-fonts-recommended
 
     - name: Render LaTeX document
       run: pdflatex report.tex
