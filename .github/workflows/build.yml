@@ -23,6 +23,10 @@ jobs:
     - name: Render LaTeX document
       run: latexmk -pdf report.tex
 
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H%M%S')"
+
     - name: release
       uses: actions/create-release@v1
       id: create_release
@@ -30,7 +34,7 @@ jobs:
         draft: false
         prerelease: false
         release_name: ${{ steps.version.outputs.version }}
-        tag_name: ${{ github.sha }}
+        tag_name: ${{ steps.date.outputs.date }}-auto
       env:
         GITHUB_TOKEN: ${{ github.token }}
   
