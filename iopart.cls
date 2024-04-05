@@ -782,12 +782,12 @@
  \hbox to\linewidth\bgroup$ \displaystyle
  \hskip\mathindent\bgroup\fi}
 \def\]{\relax\ifmmode \egroup $\hfil \egroup \end{trivlist}\else \@badmath \fi}
-\def\equation{\@beginparpenalty\predisplaypenalty
- \@endparpenalty\postdisplaypenalty
-\refstepcounter{equation}\trivlist \item[]\leavevmode
- \hbox to\linewidth\bgroup $ \displaystyle
-\hskip\mathindent}
-\def\endequation{$\hfil \displaywidth\linewidth\@eqnnum\egroup \endtrivlist}
+%\def\equation{\@beginparpenalty\predisplaypenalty
+% \@endparpenalty\postdisplaypenalty
+%\refstepcounter{equation}\trivlist \item[]\leavevmode
+% \hbox to\linewidth\bgroup $ \displaystyle
+%\hskip\mathindent}
+%\def\endequation{$\hfil \displaywidth\linewidth\@eqnnum\egroup \endtrivlist}
 %
 \@namedef{equation*}{\[}
 \@namedef{endequation*}{\]}
