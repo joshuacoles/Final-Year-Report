@@ -1,8 +1,9 @@
 \documentclass[10pt]{iopart}
 \include{setup}
 
-\def\SI{Slimpletic Integrator }
-\def\autodiff{automatic-differentiation }
+\def\SI{Slimpletic Integrator}
+\def\SymI{{Sympletic integrator}}
+\def\autodiff{automatic-differentiation}
 
 \begin{document}
 \ioptwocol[{
@@ -19,36 +20,81 @@
 
 % Following DT's SI paper, we start with top line introductions of the main areas of our paper
 
-Neural networks (NNs) are becoming an increasingly important part of the scientific discipline as they show wider application to data intensive problems and make progress where computational methods have proved otherwise intractable. % TODO: Expand
+Neural networks (NNs) and other machine learning (ML) models are becoming an increasingly important part of modern research and scientific application as they show wider application to data intensive problems and make progress where prior computational methods have proved otherwise intractable.
 
-The loss function, or equivalently reward functions, is used to train a model by optimising its parameters with respect to the aggregate loss over a large collection of known inputs and outputs. They are the component of model creation which ground the model in a given problem. Their construction varies but they generally exhibit some characteristics as discussed later in this paper. % TODO: This feels bitty and a bit undergrad
+One method of training ML models involves the construction of a loss functions, or equivalently reward functions, which frames the training process as a high-dimensionality optimisation problem. In this setting the various parameters of the model are varied such as to minimise the aggregate loss of the models action over a large collection of inputs, compared to outputs. It is thus the loss function that grounds the model in a given problem. Their construction varies but they exhibit some general characteristics as will be discussed.
 
-The \SI (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of the the Sympletic Integrator, a conservative variational integrator, which enables numerical integration of non-conservative systems with well defined bounds on the energy in the error of the system. These are based on the non-conservative action approach developed by Galley and Galley et al \todo{cite and maybe namecite}.
+% TODO: merge these two paragraphs
+% Question: What is a variational vs Sympletic Integration
+% See DT1 for good complementary references and explantion here
+The \SI{} (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of the the \SymI{}, a conservative variational integrator, which enables numerical integration of non-conservative systems that exhibits well defined bounds on the error in the energy and other conserved quantities of the system. These are based on the non-conservative action approach developed by Galley\cite{galleyClassicalMechanicsNonconservative2013} and Galley et al.\cite{galleyPrincipleStationaryNonconservative2014}.
 
-Automatic-differentiation \todo{do we capitalise both words?} techniques are a collection of computational methods for the determination of the differential of large classes of \enquote{regular} scientific code in an efficient and accurate manner.
-
-% Link these together into a cohesive summary.
-
-In this paper we focus on taking the existing mathematical framework of the \SI and adapting it to use more advanced computational methods and making it amenable to \autodiff to enable a wide class of new applications. Key among these is its use as the baseline of a number of physics based \todo{keep consistent terminology here. I quite like physics based} loss functions which we will compare for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight.
+\SymI{} are numerical integrators for Hamiltonian systems which have the property of preserving the canonical symplectic 2-form of the system.% Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
+This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others \todo{Cite papers, some from DT2, some of my own} as they will by this nature,  preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
 
 
-% TODO: I note that DT doesn't actually talk about his paper in the introduction? Actually he does at the end
+% TODO: This feels a little stilted still. Why cant SymPy use automatic differentiation?
+Currently the \SI{} is primarily implemented using computer algebra systems such as SymPy\cite{sympy} which allow for the computation of derivatives and integrals of mathematical expressions. These are general systems and are effective at working with mathematical expressions but pose limitations when seeking to increase computational speed or scale up to larger systems. Automatic-differentiation \todo{do we capitalise both words?} techniques are a collection of computational methods for the determination of the differential of large classes of \enquote{regular} scientific code in an efficient and accurate manner.
 
-How do we talk about the SI before we talk about the maths?
-\begin{enumerate}
-	\item What is a slimpletic integrator
-	\item What are they useful for
-	\item What is the need to auto-diff and a higher speed one
-	\item What \PHYSICS does this let us do?
-	\item How do we get to autodiff
-	\item Introduce the physical system which will be the through line of our model.
-\end{enumerate}
+% Aside: I want to keep consistent terminology here. I quite like physics based neural networks
+In this paper we focus on taking the existing mathematical framework of the \SI{} and adapting it to use more advanced computational methods and making it amenable to \autodiff{} to enable a wide class of new applications. These range from scalability to larger systems, for example in molecular dynamics, to its use as the foundation of a number of physics based loss functions which we will compare for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight.
+
+%\begin{enumerate}
+%	\item X What is a slimpletic integrator
+%	\item X What are they useful for
+%	\item What is the need to auto-diff and a higher speed one
+%	\item What \PHYSICS does this let us do?
+%	\item How do we get to autodiff
+%	\item Introduce the physical system which will be the through line of our model.
+%\end{enumerate}
 
 % TODO Where do we put applications of autodiff?
 \subsection{The \SI}
 
-Symplectic integrators are a class of numerical integrators for Hamiltonian systems which preserve the canonical symplectic 2-form of the system.% Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
-This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others \todo{Cite papers, some from DT2, some of my own}. This is due to their property of preserving, or near preserving, the constants of motion of a system over a large number of integration steps.
+% Setup system
+
+To understand the \SI{} method let us first consider the application of the \SymI{} application to a traditional conservative system\footnote{This explanation takes it path from an unpublished paper by Tsang et al\cite{tsangVariationalSymplecticIntegrators}} with $N$ degrees of freedom represented by some $\vb{q} \in \R^N$. We take that this system is governed by some Lagrangian, $L(\vb{q}, \dot{\vb q}, t) \in \R$ where $\dot{\vb q}$ is the standard time derivative of the degrees of freedom vector $\vb q$.
+
+Hamilton's Principle of least action \cite{goldsteinClassicalMechanics2000} provides that the physically attained path of the system through the phase space\todo{Naming of the different spaces}, $\vb q(t)$, from some initial time $t_i$, to some final time $t_f$, is one that extremises the action integral along that path,
+
+\begin{equation}
+\label{eq:action-integral}
+	S = \int_{t_i}^{t_f} L(\vb{q}(t), \dot{\vb{q}}(t), t) \rdd t.
+\end{equation}
+
+The path that meets this condition is one where the variation $\delta S$ with respect to any variation of the path $\delta \vb q(t)$ is zero, ie that corresponding to a solution of the Euler-Lagrange equations,
+
+\begin{equation}
+	\label{eq:euler-lagrange}
+	\frac{\p L(\vb q, \vb{\dot q})}{\p q} - \frac{\dd}{\dd t}\frac{\p L(\vb q, \vb{\dot q})}{\p t} = 0.
+\end{equation}
+
+% Apply
+
+With this setup we now choose to apply two successive procedures to our extremal path $\vb q(t)$, piecewise breakdown and discretisation.
+
+To start we break the trajectory down piecewise into a collection of $M$ sub-paths $\gamma_{n \in [M - 1]}$ where $[A] = \set{0, \dots, A}$, each defined on some portion $[t_n, t_{n + 1}] \subset \R$ of the whole timespan $[t_i, t_f] \subset \R$ such that they cover it completely with overlaps only at the boundaries of the portions. These together are such that the there is the correspondence,
+
+\begin{equation}
+	\vb q(t) = \begin{cases}
+		\gamma_n(t) &\text{for~} t \in [t_n, t_{n + 1}]
+	\end{cases}
+\end{equation}
+
+for all $t \in [t_i, t_f]$. These paths define a collection of points $\vb q_{n \in [M]}$ which are their mutual values at the piecewise break points and the initial and final values for $n = 0$ and $n = M$ respectively.
+
+As each piecewise curve constitutes in and of itself a physically attained trajectory we can state that any path $\vb{q}(t)$ which extremises the action for the whole timespan, must also extremise each piecewise portion, and visa-versa. 
+
+This does not bring us closer to a numerical solution directly but allows us to freely split our integral domain as needed without loss of accuracy, and thus limit the error of our numerical-integration method which will necessarily increase with the number of time-steps or their size.
+
+We now turn to the discretisation method itself.
+
+
+%Whereas a traditional numerical integration approach works by discretising the equations of motion that result from the Euler Lagrange equations, Sympletic Integrators work by discretising the action itself. This process is done in two steps.
+%
+%First we split the path the system will take through phase space into sub-paths \todo{insert maths}, then we apply approximation to these in turn. This first discretisation does not introduce error in itself as it can be seen as per Equation \todo{Equations} that extemalising the action on the overall path is equivalent to extremealising the action across the split paths.
+
+%Our chosen approximation as in DT1 and DT2 is the GGL quadrature. Thi  
 
 \subsection{Non-Conservative Actions}
 \subsection{Loss functions}
@@ -105,5 +151,6 @@ This makes them widely applicable to physical fields such as orbital dynamics an
 \section*{References}
 \bibliographystyle{iopart-num}
 \bibliography{references}
+\bibliography{static.bib}
 
 \end{document}
