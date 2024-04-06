@@ -50,8 +50,10 @@ In this paper we focus on taking the existing mathematical framework of the \SI{
 
 % TODO Where do we put applications of autodiff?
 \subsection{The \SI}
+\label{sec:intro-si}
 
 % Setup system
+% TOOD: Rephrase this to be variational integrators in general
 
 To understand the \SI{} method let us first consider the application of the \SymI{} application to a traditional conservative system\footnote{This explanation takes it path from an unpublished paper by Tsang et al\cite{tsangVariationalSymplecticIntegrators}} with $N$ degrees of freedom represented by some $\vb{q} \in \R^N$. We take that this system is governed by some Lagrangian, $L(\vb{q}, \dot{\vb q}, t) \in \R$ where $\dot{\vb q}$ is the standard time derivative of the degrees of freedom vector $\vb q$.
 
@@ -87,7 +89,11 @@ As each piecewise curve constitutes in and of itself a physically attained traje
 
 This does not bring us closer to a numerical solution directly but allows us to freely split our integral domain as needed without loss of accuracy, and thus limit the error of our numerical-integration method which will necessarily increase with the number of time-steps or their size.
 
-We now turn to the discretisation method itself.
+We now turn to the discretisation method itself. This is done using the Galerkin-Gauss-Lobatto quadrature method which approximates the integral from $t_n$ to $t_{n + 1}$ as,
+
+INSERT Equation here
+
+where
 
 
 %Whereas a traditional numerical integration approach works by discretising the equations of motion that result from the Euler Lagrange equations, Sympletic Integrators work by discretising the action itself. This process is done in two steps.
@@ -98,6 +104,7 @@ We now turn to the discretisation method itself.
 
 \subsection{Non-Conservative Actions}
 \subsection{Loss functions}
+\label{sec:intro-lf}
 
 % Slimpletic Integrator Maths
 % Need to look at the papers before DT's
@@ -108,15 +115,50 @@ We now turn to the discretisation method itself.
 	% Loss functions, what are they
 
 \section{Method}
+
+\subsection{Improvements to the \SI{} and their Physical Applications}
+
 % What is the method for the JAX components
 % I imagine learning from the DLA report the answer is... don't
 % So what do we need to mention here? Probably the physical systems and methods used to measure performance, system size, etc.
+
+\newcommand{\orgimpl}{\textit{original implementation}}
+\newcommand{\updimpl}{\textit{updated implementation}}
+
+% TODO: Mention the transition from arbitrary precision to 64bit in the codebase prior.
+Initially the existing \texttt{slimpletic} codebase \cite{originalCode}, the \orgimpl{}, was rewritten using the JAX framework, the \updimpl{}. To measure the effectiveness of this rewrite for modelling physical systems TODO scenarios were picked out for modelling.
+
+We create NNN comparative setups to show the applications of our \updimpl{} when compared to the \orgimpl{}. More at once, for longer. Easier exploration of configuration space through additional\_data
+
+First to ensure we have preserved the required error characteristics as discussed in \sref{sec:intro-si} we compare the error of Runge-Kutta, the \orgimpl{}, and the \updimpl{}.
+
+Next we measure the execution speed of the \updimpl{} when compared to the \orgimpl{} on a number of different candidate systems across different numbers of timesteps.
+
+Finally we show the physical applications of this improvement by modelling a MD simulation as discussed in TODO across a different number of bodies and timesteps.
+
+% TODO: Can we use the sytem from Comp A?
+
+\subsection{Applications to Loss Functions}
+
+Taking this \updimpl{} we then explore different applications of it as a loss function, comparing the resulting mathematical properties to those discussed in \sref{sec:intro-lf} and converge properties.
+
+To perform this comparison we chose different embeddings, representations of the non-conservative Lagrangian $\Lambda$.
+
+We then applied gradient-descent\cite{gradientDescent} to these different loss functions, measuring the rate and percentage of convergence across the domain of the embedding and explored different methods for increasing these quantities as well as exploring regions of convergence under different choices of embeddings to test their properties.
+
+
 % Then discuss auto-diff and the physical systems we chose to fit toward and why.
 % How do the systems we fit towards relate to the through-line system?
 % Different loss functions we chose to explore and why
 % How we compare different loss functions
-
 % What we did, how we built loss functios
+
+\todo{Make the choice of embedding a thing we talk about in results}
+\todo{Again wouldn't it be call to talk about symmetries here}
+
+\subsection{Loss Function in the Training of Neural Networks}
+
+Finally we attempt to apply our chosen loss function and Lagrangian embedding to different architectures of neural network determining their effectiveness at determining
 
 \section{Results and Specific Discussion}
 % This is the shit we got out of the method
