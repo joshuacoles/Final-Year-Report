@@ -3,7 +3,7 @@
 
 \def\SI{Slimpletic Integrator}
 \def\SymI{{Sympletic integrator}}
-\def\autodiff{automatic-differentiation}
+\newcommand{\autodiff}{automatic-differentiation}
 
 \begin{document}
 \ioptwocol[{
@@ -17,7 +17,6 @@
 
 \section{Introduction}
 % Heres all the knowledge you need to understand shit
-
 % Following DT's SI paper, we start with top line introductions of the main areas of our paper
 
 Neural networks (NNs) and other machine learning (ML) models are becoming an increasingly important part of modern research and scientific application as they show wider application to data intensive problems and make progress where prior computational methods have proved otherwise intractable.
@@ -47,6 +46,22 @@ In this paper we focus on taking the existing mathematical framework of the \SI{
 %	\item How do we get to autodiff
 %	\item Introduce the physical system which will be the through line of our model.
 %\end{enumerate}
+
+\subsection{Non-Conservative Actions}
+\label{sec:intro-nc-actions}
+
+\begin{quote}
+Noether’s theorem for conservative actions can be shown to generalize to nonconservative systems where the corresponding Noether currents evolve in time due to a non-zero K (Galley et al. 2014). One can show that for continuous symmetries of the conservative action, which remain after discretization, discrete Noether currents will also evolve due to Kd. Thus, translational or rotational symmetries, for example, will generate discrete momenta that evolve accord- ing to Kd, up to round off and bias error (Brouwer 1937; Rein \& Spiegel 2015). Additional error compared to the physical evolution is only due to the discretization of the action.
+\\\\
+The GGL discretization does not preserve the time-shift symmetry preventing energy evolution from being precisely tracked. However, the fractional energy error tends to be oscillatory and bounded by a resolution and order-dependent constant.7 We will defer more detailed discussion of Noether current evolution to a longer follow-up paper in the interests of space.
+\\\\
+The resulting slimplectic maps are accurate up to order 2r + 2. For r = 0, where no intermediate steps are used, the quadrature method is the trapezoid rule, and the variational integrator is second-order and equivalent to the Störmer–Verlet “leap-frog” integrator (Wendlandt \& Marsden 1997).
+\end{quote}
+
+
+
+
+% Introduce lambda so we can talk about it in the SI Sec
 
 % TODO Where do we put applications of autodiff?
 \subsection{The \SI}
@@ -78,6 +93,7 @@ With this setup we now choose to apply two successive procedures to our extremal
 To start we break the trajectory down piecewise into a collection of $M$ sub-paths $\gamma_{n \in [M - 1]}$ where $[A] = \set{0, \dots, A}$, each defined on some portion of the whole timespan $[t_n, t_{n + 1}] \subset [t_i, t_f] \subset \R$ such that they cover it completely with overlaps only at the boundaries of the intervals. These together are such that the there is the correspondence,
 
 \begin{equation}
+\label{eq:pw-traj}
 	\vb q(t) = \begin{cases}
 		\gamma_n(t) &\text{for~} t \in [t_n, t_{n + 1}]
 	\end{cases}
@@ -99,10 +115,10 @@ where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of t
 
 \begin{equation}
   D_{ij} = \begin{cases}
-  	\frac{(r + 1)(r + 2)}{2\Delta t} &i = j = 0 \\
-  	-\frac{(r + 1)(r + 2)}{2\Delta t} & i = j = r + 1 \\
-  	0 & i = j \land i \notin \set{0, r + 1} \\
-  	\frac{2P_{r + 1}(x_i)}{P_{r+1}(x_j)(x - x_j)\Delta t} & i\neq j
+  	\dfrac{(r + 1)(r + 2)}{2\Delta t} &i = j = 0 \\\\
+  	-\dfrac{(r + 1)(r + 2)}{2\Delta t} & i = j = r + 1 \\\\
+  	0 & i = j \land i \notin \set{0, r + 1} \\\\
+  	\dfrac{2P_{r + 1}(x_i)}{P_{r+1}(x_j)(x - x_j)\Delta t} & i\neq j
   \end{cases}
 \end{equation}
 
@@ -115,14 +131,40 @@ which provides that,
 In turn this allows to express the integral as,
 
 \begin{equation}
-  \int_{t_n}^{t_{n + 1}} L(\vb q, \dot{\vb q}, t) \dd t = \sum_{i = 0}^{r + 1} w_i F(q_{n}^{(i)}, \dot\phi_{n}^{(i)}, t_{n}^{(i)})
+\label{eq:discr-action-1}
+  \int_{t_n}^{t_{n + 1}} L(\vb q, \dot{\vb q}, t) \dd t \approx \sum_{i = 0}^{r + 1} w_i L(q_{n}^{(i)}, \dot\phi_{n}^{(i)}, t_{n}^{(i)})
 \end{equation}
 
-where $w_i$ are the quadrature weights given by
+where the label the approximate expression $L_d^n$ and where $w_i$ are the quadrature weights given by
 
 \begin{equation}
   w_i = \frac{\Delta t}{(r + 1)(r + 2)(P_{r + 1}(x_i))^2}
 \end{equation}
+
+Equation \eqref{eq:discr-action-1} strung together across the different piecewise sub-trajectories defined in Equation \eqref{eq:pw-traj} gives us the total discretised action of the system, shown in Equation \eqref{eq:discr-action-2}, that sets variational integrators \todo{is this sympl or variational} apart from their \todo{rant about other integrators at the start of this section} more general counterparts. 
+
+\begin{equation}
+\label{eq:discr-action-2}
+  S_d = \sum_{n = 0}^{M} \sum_{i = 0}^{r + 1} w_i L(q_{n}^{(i)}, \dot\phi_{n}^{(i)}, t_{n}^{(i)})
+\end{equation}
+
+From here we then extremise this approximate path with respect to the mutual and interior \todo{have I used this terminology before?} points to obtain the equations of motion of the system as,
+
+\begin{gather}
+	\frac{\p L_d^{n-1}}{\p q_n} + \frac{\p L_d^{n}}{\p q_n} = 0 \\
+	\label{eq:Ld-interior-eom} \frac{\p L_d^{n}}{\p q^{(i)}_n} = 0
+\end{gather}
+
+where $L_d^{n}$ is This first equation can be simplified further into two equivalent definitions for the discrete momentum \(\pi_n\),
+
+\begin{align}
+	\label{eq:pi-n} \pi_n &= -\frac{\p L_d^{n}}{\p q_n} \\
+	\label{eq:pi-n+1} \pi_{n + 1} &= \frac{\p L_d^{n}}{\p q_{n + 1}}
+\end{align}
+
+and a continuity constraint at these mutual overlap points $\vb q_n$ in the same manner as we required for $\vb q_n$ itself. Together Equations \eqref{eq:Ld-interior-eom}, \eqref{eq:pi-n} can be solved to determine the values of $\vb q^{(i)}_n$, from which Equation \eqref{eq:pi-n+1} provides a form for determining $\pi_{n + 1}$.
+
+This form is provided in terms of the traditional conservative Lagrangian $L$ however can be readily adapted to the non-conservative Lagrangian formalism discussed in \sref{sec:intro-nc-actions} by substituting $L$ for the non-conservative Lagrangian $\Lambda$ and $\vb q_n$ for $\vb q_{n, -}$.
 
 
 %Whereas a traditional numerical integration approach works by discretising the equations of motion that result from the Euler Lagrange equations, Sympletic Integrators work by discretising the action itself. This process is done in two steps.
@@ -131,17 +173,29 @@ where $w_i$ are the quadrature weights given by
 
 %Our chosen approximation as in DT1 and DT2 is the GGL quadrature. Thi  
 
-\subsection{Non-Conservative Actions}
+\subsection{Physics Informed Neural Networks}
+\label{sec:intro-pinn}
+
 \subsection{Loss functions}
 \label{sec:intro-lf}
 
 % Slimpletic Integrator Maths
 % Need to look at the papers before DT's
 
+
 % Do we need to talk about the JAX things in the "understanding" component? Probably only briefly as its not **PHYSICS** sooooo
 % Will need to talk about auto-diff. Link to JAX papers.
 % Intro to gradient descent
 	% Loss functions, what are they
+
+
+\subsection{Automatic-Differentiation, XLA, and Google's JAX}
+
+Automatic-differentiation is the process of computing the differential of \enquote{regular} code, ie. code that is substantially similar to code that one would normally write, with respect to one or more of its arguments. Google's JAX library \cite{jax2018github} contains one implementation of this in Python which works by passing \enquote{tracers} into the Python code which record the actions done to them such that a differential can be calculated.
+
+JAX also incorporates the XLA (Accelerated Linear Algebra) library \cite{openxla-xla} where it uses similar tracing methods to translate a restricted, but large, subset of Python code into a series of low-level eifficent operations which can be executed at speed on the GPU or CPU.
+
+These two technologies together show great promise in the fields of machine learning and simulation techniques as they allow for code that would previously have to be written in low-level languages such as C or C++ to be expressed in Python with significantly reduced overhead at runtime, and easier use by researchers.
 
 \section{Method}
 
