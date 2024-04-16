@@ -48,6 +48,8 @@ In this paper we focus on taking the existing mathematical framework of the \SI{
 %	\item Introduce the physical system which will be the through line of our model.
 %\end{enumerate}
 
+\section{Preliminaries}
+
 \subsection{Lagrangian Mechanics}
 \label{sec:lag-mech}
 
@@ -111,6 +113,7 @@ This form can be consider as the contribution of the traditional conservative La
 To solve this system we follow in the same form as before, aiming to extemise a new action defined now in terms of $\Lambda$, however crucially we do so in what is known as the \enquote{physical limit} (P.L), where $\vbq_1 = \vbq_2$ or equivalently $\vbq_- \to \vb 0$. This gives the non-conservative Euler Lagrange equation,
 
 \begin{equation}
+	\label{eq:nc-el}
   	\left[\frac{\p \Lambda}{\p q_i} - \frac{\dd}{\dd t}\frac{\p \Lambda}{\p \dot q_i}\right]_{\text{P.L}} = 0
 \end{equation}
 
@@ -143,13 +146,15 @@ As each piecewise curve constitutes in and of itself a physically attained traje
 
 This does not bring us closer to a numerical solution directly but allows us to freely split our integral domain as needed without loss of accuracy, and thus limit the error of our numerical-integration method which will necessarily increase with the number of time-steps or their size.
 
-We now turn to the discretisation method itself. This is done using the Galerkin-Gauss-Lobatto quadrature method of order $r \in \N_0$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} which approximates the integral from $t_n$ to $t_{n + 1}$ using the intermediary points
+We now turn to the discretisation method itself. This is done using the Galerkin-Gauss-Lobatto (GGL) quadrature method of order $r \in \N_0$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015, farrVariationalIntegratorsGravitational2007} which approximates the integral from $t_n$ to $t_{n + 1}$ using the intermediary points
 
 \begin{equation}
   t^{(i)}_n = t_n + (1 + x_i)\frac{\Delta t}{2}
 \end{equation}
 
-where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre Polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. These allow us to approximate the path of the system within this quadrature using the associated cardinal functions for the GGL quadrature, labelled $\phi(t)$, as \(\vb q(t) = \phi(t) + \Or((\Delta t)^{r + 2})\) \todo{What does DT1 actually mean in this bit??? Bottom of pg2col1}. These provide a suitable approximation for the path derivative $\dot{\vb q}$ by the use the derivative matrix,
+where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. A choice for a given $r$ provides slimplectic maps that are accurate up an order $2r + 2$.
+
+These allow us to approximate the path of the system within this quadrature using the associated cardinal functions for the GGL quadrature, labelled $\phi(t)$, as \(\vb q(t) = \phi(t) + \Or((\Delta t)^{r + 2})\) \todo{What does DT1 actually mean in this bit??? Bottom of pg2col1}. These provide a suitable approximation for the path derivative $\dot{\vb q}$ by the use the derivative matrix,
 
 \begin{equation}
   D_{ij} = \begin{cases}
@@ -202,34 +207,30 @@ where $L_d^{n}$ is This first equation can be simplified further into two equiva
 
 and a continuity constraint at these mutual overlap points $\vb q_n$ in the same manner as we required for $\vb q_n$ itself. Together Equations \eqref{eq:Ld-interior-eom}, \eqref{eq:pi-n} can be solved to determine the values of $\vb q^{(i)}_n$, from which Equation \eqref{eq:pi-n+1} provides a form for determining $\pi_{n + 1}$.
 
-This form is provided in terms of the traditional conservative Lagrangian $L$ however can be readily adapted to the non-conservative Lagrangian formalism discussed in \sref{sec:intro-nc-actions} by substituting $L$ for the non-conservative Lagrangian $\Lambda$ and $\vb q_n$ for $\vb q_{n, -}$.
+This form is provided in terms of the traditional conservative Lagrangian $L$ however can be readily adapted to the non-conservative Lagrangian formalism discussed in \sref{sec:intro-nc-actions} by considering instead the non-conservative Euler-Lagrange Equation \eqref{eq:nc-el}, in effect substituting $L$ for the non-conservative Lagrangian $\Lambda$ and $\vb q_n$ for $\vb q_{n, -}$.
 
-
-%Whereas a traditional numerical integration approach works by discretising the equations of motion that result from the Euler Lagrange equations, Sympletic Integrators work by discretising the action itself. This process is done in two steps.
-%
-%First we split the path the system will take through phase space into sub-paths \todo{insert maths}, then we apply approximation to these in turn. This first discretisation does not introduce error in itself as it can be seen as per Equation \todo{Equations} that extemalising the action on the overall path is equivalent to extremealising the action across the split paths.
-
-%Our chosen approximation as in DT1 and DT2 is the GGL quadrature. Thi  
+Continuing the consideration of Noether currents from prior sections, it can be shown that the continuous symmetries of the conservative action evolve as due to this now discretised $K_d$. It should be noted that GGL discretisation does not preserve time-shift symmetry, and hence energy is non conserved under the operation, however our \todo{As will be done} and previous results show that the fractional error is generally bounded over the integration.
 
 \subsection{Physics Informed Neural Networks}
 \label{sec:intro-pinn}
 
+Physics informed neural networks (PINNs) are neural networks which include physical knowledge in their training processes \cite{raissiPhysicsInformedDeep2017}. Their most common application is to solving PDEs \cite{luDeepXDEDeepLearning2021,mengCompositeNeuralNetwork2020} where we take physically derived knowledge of the system as a prior in training and fit a neural network to solve some PDE incorporating the residuals into the models loss (loss functions will be discussed in more depth in \sref{sec:intro-lf}).
+
+Neural networks more generally are a collection of linear and non-linear components composed together to form complex non-linear functions. At their base level the linear components can be expressed as the simple linear equation \(\vb{y} = W\vb{x} + \vb{b}\) where $W$ is a collection of weights for this component and $\vb{b}$ the biases; and the non-linear components are functions such as sigmoid or $\tanh$ which are included to stop collapse to linearity for the whole composition. These weights, biases, and other variables within the model constitute the model's \emph{parameters}.
+
+This composition is useful in that it can be shown that, with sufficient complexity, these forms are dense in the space of Borel measurable functions and hence can take the place of almost any physical function or mathematical procedure \cite{hornikMultilayerFeedforwardNetworks1989}.
+
 \subsection{Loss functions}
 \label{sec:intro-lf}
 
-Loss functions are the primary leaning method of neural networks and in PINNs act as the place where physics steps in to connect our computational model to reality. There are a ZTh
+Loss functions are the primary leaning method of neural networks and in PINNs act as the place where physics steps in to connect our computational model to reality. Loss functions work by attempting to minimise an arbitrary loss value computed from the parameters and a large dataset of known inputs and outputs for the model.
 
-% Slimpletic Integrator Maths
-% Need to look at the papers before DT's
+Loss functions in PINNs are often comprised of two components. First there is the prediction or physical loss which may for example be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Secondly there a regularisation loss term which helps to penalise overfitting to the training data, expressed as \enquote{complexity}, within the model. This might be implemented as an $\mathrm{L}^2$  of a vector containing all parameters of the model.
 
-
-% Do we need to talk about the JAX things in the "understanding" component? Probably only briefly as its not **PHYSICS** sooooo
-% Will need to talk about auto-diff. Link to JAX papers.
-% Intro to gradient descent
-	% Loss functions, what are they
-
+The exact algorithm for this optimisation varies and is the subject of much research \todo{If I say this I should probably cite it} however a common choice is Stochastic gradient descent. The requires that the loss function be differentiable (although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}). This property is provided by the automatic-differentiation techniques discussed in \sref{sec:intro-autodiff} but there are also other properties to consider\cite{sraOptimizationMachineLearning2012}. These include: higher-order differentiability, convexity, lipschitz continuity \cite{mohammadiPerformanceNoisyNesterov2019} among others. \todo{this needs a lot of work}
 
 \subsection{Automatic-Differentiation, XLA, and Google's JAX}
+\label{sec:intro-autodiff}
 
 Automatic-differentiation is the process of computing the differential of \enquote{regular} code, ie. code that is substantially similar to code that one would normally write, with respect to one or more of its arguments. Google's JAX library \cite{jax2018github} contains one implementation of this in Python which works by passing \enquote{tracers} into the Python code which record the actions done to them such that a differential can be calculated.
 
