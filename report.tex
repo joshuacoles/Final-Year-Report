@@ -4,6 +4,7 @@
 \def\SI{Slimpletic Integrator}
 \def\SymI{{Sympletic integrator}}
 \newcommand{\autodiff}{automatic-differentiation}
+\def\vbq{\vb{q}}
 
 \begin{document}
 \ioptwocol[{
@@ -28,12 +29,12 @@ One method of training ML models involves the construction of a loss functions, 
 % See DT1 for good complementary references and explantion here
 The \SI{} (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of the the \SymI{}, a conservative variational integrator, which enables numerical integration of non-conservative systems that exhibits well defined bounds on the error in the energy and other conserved quantities of the system. These are based on the non-conservative action approach developed by Galley\cite{galleyClassicalMechanicsNonconservative2013} and Galley et al.\cite{galleyPrincipleStationaryNonconservative2014}.
 
-\SymI{} are numerical integrators for Hamiltonian systems which have the property of preserving the canonical symplectic 2-form of the system.% Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
+\SymI{} are numerical integrators for Hamiltonian systems which have the property of preserving the canonical symplectic 2-form of the system. % Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
 This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others \todo{Cite papers, some from DT2, some of my own} as they will by this nature,  preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
 
 
 % TODO: This feels a little stilted still. Why cant SymPy use automatic differentiation?
-Currently the \SI{} is primarily implemented using computer algebra systems such as SymPy\cite{sympy} which allow for the computation of derivatives and integrals of mathematical expressions. These are general systems and are effective at working with mathematical expressions but pose limitations when seeking to increase computational speed or scale up to larger systems. Automatic-differentiation \todo{do we capitalise both words?} techniques are a collection of computational methods for the determination of the differential of large classes of \enquote{regular} scientific code in an efficient and accurate manner.
+Currently the \SI{} is primarily implemented using computer algebra systems such as SymPy\cite{sympy} which allow for the computation of derivatives and integrals of mathematical expressions. These are general systems and are effective at working with mathematical expressions but pose limitations when seeking to increase computational speed or scale up to larger systems. Automatic-differentiation techniques are a collection of computational methods for the determination of the differential of large classes of \enquote{regular} scientific code in an efficient and accurate manner.
 
 % Aside: I want to keep consistent terminology here. I quite like physics based neural networks
 In this paper we focus on taking the existing mathematical framework of the \SI{} and adapting it to use more advanced computational methods and making it amenable to \autodiff{} to enable a wide class of new applications. These range from scalability to larger systems, for example in molecular dynamics, to its use as the foundation of a number of physics based loss functions which we will compare for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight.
@@ -47,46 +48,83 @@ In this paper we focus on taking the existing mathematical framework of the \SI{
 %	\item Introduce the physical system which will be the through line of our model.
 %\end{enumerate}
 
+\subsection{Lagrangian Mechanics}
+\label{sec:lag-mech}
+
+Lagrangian mechanics is a formalism of classical mechanics which places emphasis on the energies and systems of the system and that allows a flexibility in the exact variables used to parameterise the system. As it is traditionally phrased it works to solve the problem of determining the evolution of a physical system, parameterised by some generalised degrees of freedom $\set{q_1, \dots, q_n} \in \R$, across the timespan $[t_i, t_f] \subset \R$ from some initially known configuration. These generalised degrees of freedom are represented as the vector, $\vb q = \set{q_1, \dots, q_n} \in \R^n$, and this initial configuration $\vb q_0$.
+
+This determination is done by constructing a functional,
+
+\begin{equation}
+  \label{eq:trad-action}
+  S[\vb{q}] = \int_{t_i}^{t_f} L(\vb{q}, \dot{\vb{q}}, t) \rdd t
+\end{equation}
+
+where $S$ is known as the action of the system, $\dot\vbq$ is the standard time derivative of the systems path, and $L$ the Lagrangian, being traditionally made up of two components $T$, the kinetic energy of the system in some configuration at some time, and $V$, the potential energy of the system. These are combined as,
+
+\begin{equation}
+  \label{eq:trad-lag}
+  L(\vb{q}, \dot{\vb{q}}, t) = T(\vb{q}, \dot{\vb{q}}, t) - V(\vb{q}, \dot{\vb{q}}, t).
+\end{equation}
+
+A physical solution is arrived on by then employing Hamilton's principle of least Action \cite{goldsteinClassicalMechanics2000} which provides that the physical path, $\vb q(t)$, is the one that \textit{extremises} the functional $S[\vb q]$ as defined in Equation \eqref{eq:trad-action}, ie one where the variation $\delta S$ with respect to any variation of the path $\delta \vbq(t)$ is zero. This equation can be found by solving the Euler-Lagrange equations,
+
+\begin{equation}
+	\label{eq:euler-lagrange}
+	\frac{\p L}{\p q_i} - \frac{\dd}{\dd t}\frac{\p L}{\p \dot q_i} = 0
+\end{equation}
+
+for each generalised degree of $q_i$. To each we can also associate an conjugate momentum $p_i$ and generalised force $F_i$,
+
+\begin{align}
+  p_i = \frac{\p L }{\p \dot q_i} \\
+  F_i = \frac{\p L}{\p q_i}
+\end{align}
+
+such that Equation \eqref{eq:euler-lagrange} reads in-line with Newton's second law, $F = \dot{p}_i$.
+
+The focus on symmetries within the formalism comes to the fore however when we consider Noether's Theorem \cite{noetherInvariantVariationProblems1971} which states that every continuous symmetry of the action $S$ has a corresponding conserved quantity. A simple example of this can be seen for degrees of freedom which are said to be \emph{cyclic} in that the coordinate value itself, $q_i$, does not appear directly in the Lagrangian. It can be readily seen from Equation \eqref{eq:euler-lagrange} that if this is the case then,
+
+\begin{equation}
+  \frac{\dd}{\dd t}\frac{\p L}{\p \dot q_i} = 0
+\end{equation}
+
+which implies that the conjugate momentum $p_i$ is a conserved quantity of the system.
+
 \subsection{Non-Conservative Actions}
 \label{sec:intro-nc-actions}
 
-\begin{quote}
-Noether’s theorem for conservative actions can be shown to generalize to nonconservative systems where the corresponding Noether currents evolve in time due to a non-zero K (Galley et al. 2014). One can show that for continuous symmetries of the conservative action, which remain after discretization, discrete Noether currents will also evolve due to Kd. Thus, translational or rotational symmetries, for example, will generate discrete momenta that evolve accord- ing to Kd, up to round off and bias error (Brouwer 1937; Rein \& Spiegel 2015). Additional error compared to the physical evolution is only due to the discretization of the action.
-\\\\
-The GGL discretization does not preserve the time-shift symmetry preventing energy evolution from being precisely tracked. However, the fractional energy error tends to be oscillatory and bounded by a resolution and order-dependent constant.7 We will defer more detailed discussion of Noether current evolution to a longer follow-up paper in the interests of space.
-\\\\
-The resulting slimplectic maps are accurate up to order 2r + 2. For r = 0, where no intermediate steps are used, the quadrature method is the trapezoid rule, and the variational integrator is second-order and equivalent to the Störmer–Verlet “leap-frog” integrator (Wendlandt \& Marsden 1997).
-\end{quote}
+Lagrangian mechanics as discussed applies only to conservative systems. While there exist other extensions to non-conservative systems, notably Rayleigh dissipation functions \cite{struttGeneralTheoremsRelating1871} for simple dissipative functions, we will focus on the method put forward by Galley et al. \cite{galleyClassicalMechanicsNonconservative2013}.
 
+Within this method we incorporate non-conservative behaviour by formally double the degrees of freedom of the system discussed prior into two virtual paths $\vb q_{1,2}$ and considering a new non-conservative Lagrangian $\Lambda$ given by,
 
+\begin{equation}
+  \Lambda = L(\vbq_1, \dot\vbq_1, t) - L(\vbq_1, \dot\vbq_1, t) + K(\vbq_1, \vbq_2, \dot\vbq_1, \dot\vbq_2, t).
+\end{equation}
 
+This form can be consider as the contribution of the traditional conservative Lagrangian moving forwards along the path traced by $\vbq_1$, and then backwards (and hence negative) along that traced by $\vbq_2$. This additional term $K$ is labelled the non-conservative potential, representing a coupling between the two paths (if it could be broken down cleanly into a form of $V(\vbq_1) - V(\vbq_2)$ or similar then these could be absorbed into $L$ leaving $K = 0$). In practical considerations it is often useful (as will become clear shortly) to alter our choice of variables to instead be $\vbq_+ = {(\vbq_1 + \vbq_2)}/{2}$ and $\vbq_- = \vbq_1 - \vbq_2$. Within this formalism we can also define a corresponding conjugate momenta,
 
-% Introduce lambda so we can talk about it in the SI Sec
+\begin{equation}
+  \pi_{\mp, i} = \frac{\p \Lambda}{\p q_{\pm,i}}.
+\end{equation}
 
-% TODO Where do we put applications of autodiff?
+To solve this system we follow in the same form as before, aiming to extemise a new action defined now in terms of $\Lambda$, however crucially we do so in what is known as the \enquote{physical limit} (P.L), where $\vbq_1 = \vbq_2$ or equivalently $\vbq_- \to \vb 0$. This gives the non-conservative Euler Lagrange equation,
+
+\begin{equation}
+  	\left[\frac{\p \Lambda}{\p q_i} - \frac{\dd}{\dd t}\frac{\p \Lambda}{\p \dot q_i}\right]_{\text{P.L}} = 0
+\end{equation}
+
+note that only the Euler-Lagrange equation differentiating with respect to $\vbq_-$ survives (or equivalently for $\boldsymbol{\pi}_+$). A more complete explanation of this process, along with a derivation can be found in \cite{galleyClassicalMechanicsNonconservative2013}.
+
+A corresponding form of Noether’s theorem can be shown to hold for these non-conservative systems where the Noether currents evolve in time due to the effect of the non-conservative coupling potential $K$ \cite{galleyPrincipleStationaryNonconservative2014}.
+
 \subsection{The \SI}
 \label{sec:intro-si}
 
 % Setup system
 % TOOD: Rephrase this to be variational integrators in general
 
-To understand the \SI{} method let us first consider the application of the \SymI{} application to a traditional conservative system\footnote{This explanation takes its path from an unpublished paper by Tsang et al\cite{tsangVariationalSymplecticIntegrators}} with $N$ degrees of freedom represented by some $\vb{q} \in \R^N$. We take that this system is governed by some Lagrangian, $L(\vb{q}, \dot{\vb q}, t) \in \R$ where $\dot{\vb q}$ is the standard time derivative of the degrees of freedom vector $\vb q$.
-
-Hamilton's Principle of least action \cite{goldsteinClassicalMechanics2000} provides that the physically attained path of the system through the phase space\todo{Naming of the different spaces}, $\vb q(t)$, from some initial time $t_i$, to some final time $t_f$, is one that extremises the action integral along that path,
-
-\begin{equation}
-\label{eq:action-integral}
-	S = \int_{t_i}^{t_f} L(\vb{q}(t), \dot{\vb{q}}(t), t) \rdd t.
-\end{equation}
-
-The path that meets this condition is one where the variation $\delta S$ with respect to any variation of the path $\delta \vb q(t)$ is zero, ie that corresponding to a solution of the Euler-Lagrange equations,
-
-\begin{equation}
-	\label{eq:euler-lagrange}
-	\frac{\p L(\vb q, \vb{\dot q})}{\p q} - \frac{\dd}{\dd t}\frac{\p L(\vb q, \vb{\dot q})}{\p t} = 0.
-\end{equation}
-
-% Apply
+To understand the \SI{} method we first consider the application of the \SymI{} to a traditional conservative system\footnote{This explanation takes its path from an unpublished paper by Tsang et al\cite{tsangVariationalSymplecticIntegrators}}. As before consider a system with $N$ degrees of freedom represented by some $\vbq \in \R^N$. We take that this system is governed by some Lagrangian, $L(\vbq, \dot{\vbq}, t) \in \R$.
 
 With this setup we now choose to apply two successive procedures to our extremal path $\vb q(t)$, piecewise breakdown and discretisation with an aim to determine it numerically.
 
@@ -178,6 +216,8 @@ This form is provided in terms of the traditional conservative Lagrangian $L$ ho
 
 \subsection{Loss functions}
 \label{sec:intro-lf}
+
+Loss functions are the primary leaning method of neural networks and in PINNs act as the place where physics steps in to connect our computational model to reality. There are a ZTh
 
 % Slimpletic Integrator Maths
 % Need to look at the papers before DT's
