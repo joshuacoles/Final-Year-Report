@@ -207,9 +207,32 @@ This composition is useful in that it can be shown that, with sufficient complex
 
 Loss functions are the primary leaning method of neural networks and in PINNs act as the place where physics steps in to connect our computational model to reality. Loss functions work by attempting to minimise an arbitrary loss value computed from the parameters and a large dataset of known inputs and outputs for the model.
 
-Loss functions in PINNs are often comprised of two components. First there is the prediction or physical loss which may for example be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Secondly there a regularisation loss term which helps to penalise overfitting to the training data, expressed as \enquote{complexity}, within the model. This might be implemented as an $\mathrm{L}^2$  of a vector containing all parameters of the model.
+A loss function traditionally takes the form, $\mathrm{loss} = f(y_{\text{true}}, y_{\text{pred}})$ where $f$ is some chosen function and $y_{\text{pred}}$ and $y_{\text{true}}$ are both real vectors in the output space of the model, representing the known models output and the known true output respectively.
 
-The exact algorithm for this optimisation varies and is the subject of much research \todo{If I say this I should probably cite it} however a common choice is Stochastic gradient descent. The requires that the loss function be differentiable (although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}). This property is provided by the automatic-differentiation techniques discussed in \sref{sec:intro-autodiff} but there are also other properties to consider\cite{sraOptimizationMachineLearning2012}. These include: higher-order differentiability, convexity, lipschitz continuity \cite{mohammadiPerformanceNoisyNesterov2019} among others. \todo{this needs a lot of work}
+Loss functions in PINNs are often comprised of two components. First there is the prediction or physical loss which may for example be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Secondly there a regularisation loss term which helps to penalise overfitting to the training data, expressed as \enquote{complexity}, within the model. This might be implemented as an $L^2$  of a vector containing all parameters of the model.
+
+Optimising this loss function can be thought of as a traditional minimisation problem, with common choices of the method being Stochastic gradient descent and Adam\cite{kingmaAdamMethodStochastic2017}. These impose various requirements on the loss function, for example generally that it is differentiable\footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, Lipschitz continuity, and convexity\cite{sraOptimizationMachineLearning2012}.
+
+\subsection{Lagrangian Embeddings}
+
+Dealing computationally with non-conservative Lagrangians $\Lambda$, for example as an output of a PINN, requires defining some mapping from a collection of real 	numbers, to a form of $\Lambda(\vbq, \dot\vbq, t)$. This can be thought of as a function,
+
+\begin{equation}
+  E: \R^n \to \mathbb{L}
+\end{equation}
+
+where $E$ is a chosen embedding function and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. The choice of embedding necessarily restricts and dictates the systems which the system can deal with thus its choice is crucial in the design of any system.
+
+For example one could choose to model possibly damped harmonic oscillators using the embeddings function,
+
+\begin{equation}
+\begin{gathered}
+  E_{\text{DHO}} : \R^3 \to \mathbb{L} \\
+  E(m, k, \lambda) = \frac12 m\dot\vbq^2 - \frac12 m\dot\vbq - \lambda\dot \vbq_+\vbq_-
+\end{gathered}
+\end{equation}
+
+where we would place some additional requirements on our embedding domain based on our physical knowledge of the system, for example that the mass $m$ and spring constant $k$.
 
 \subsection{Automatic-Differentiation, XLA, and Google's JAX}
 \label{sec:intro-autodiff}

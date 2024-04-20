@@ -1,43 +1,56 @@
 \section{Method}
 
+\subsection{Example Systems}
+% I should reference these but I don't know where
+
+\subsubsection{Damped Harmonic Oscillators}
+
+\subsubsection{PRD}
+
+\subsubsection{Large coupled springs}
+
 \subsection{Improvements to the \SI{} and their Physical Applications}
 
-% What is the method for the JAX components
-% I imagine learning from the DLA report the answer is... don't
-% So what do we need to mention here? Probably the physical systems and methods used to measure performance, system size, etc.
+Initially the existing \texttt{slimpletic} codebase \cite{originalCode}, the \orgimpl{}, was rewritten using the JAX framework, the \updimpl{}. We chose two key metrics: run-time and accuracy to judge our model against the \orgimpl{} and RK4, a well known non-variational integrator \todo{we should have referenced this already}. 
 
-% TODO: Mention the transition from arbitrary precision to 64bit in the codebase prior.
-Initially the existing \texttt{slimpletic} codebase \cite{originalCode}, the \orgimpl{}, was rewritten using the JAX framework, the \updimpl{}. To measure the effectiveness of this rewrite for modelling physical systems TODO scenarios were picked out for modelling.
+First to ensure that we maintained the error bounds expected for our model (as per \sref{sec:intro-si}) we generated graphs of fractional energy and momentum error for RK4, the \orgimpl{}, and the \updimpl{}, similar to that done in the original paper.
 
-We create NNN comparative setups to show the applications of our \updimpl{} when compared to the \orgimpl{}. More at once, for longer. Easier exploration of configuration space through additional\_data
+Next we create three test-cases to measure performance of the
+integrator and its consequences on experimental capability. These were,
 
-First to ensure we have preserved the required error characteristics as discussed in \sref{sec:intro-si} we compare the error of Runge-Kutta, the \orgimpl{}, and the \updimpl{}.
+\begin{enumerate}
+	\item Modelling the same system for different timespans by varying $\Delta t$ and $N_{\text{iterations}}$.
+	\item Modelling the same system across different orders of integration $r$.
+	\item Modelling a collection of similar systems, across different initial conditions.
+\end{enumerate}
 
-Next we measure the execution speed of the \updimpl{} when compared to the \orgimpl{} on a number of different candidate systems across different numbers of timesteps.
-
-Finally we show the physical applications of this improvement by modelling a MD simulation as discussed in TODO across a different number of bodies and timesteps.
-
-% TODO: Can we use the sytem from Comp A?
+The first two of these are designed to test the scaling behaviours of our model to provide insight into its applicability to larger systems, the third acting as a more realistic test case of its use in actual experimental physics. Finally we simulate a large coupled spring system to show the applicability of the observed scaling laws to physical experiments.
 
 \subsection{Applications to Loss Functions}
 
-Taking this \updimpl{} we then explore different applications of it as a loss function, comparing the resulting mathematical properties to those discussed in \sref{sec:intro-lf} and converge properties.
+Taking this \updimpl{} we then explore its different uses as a loss function for physical systems. To start we consider only the form of the loss function, as well as the embedding function to use.
 
-To perform this comparison we chose different embeddings, representations of the non-conservative Lagrangian $\Lambda$.
+\todo{I probably want a table for embeddings we use}
 
-We then applied gradient-descent\cite{gradientDescent} to these different loss functions, measuring the rate and percentage of convergence across the domain of the embedding and explored different methods for increasing these quantities as well as exploring regions of convergence under different choices of embeddings to test their properties.
+While these are distinct components of a learning system, they are heavily linked as ideally we would define the physical components of our loss function primarily in terms of the trajectories, rather than the values of the embedding vector itself. Hence the embedding function and slimpletic integrator must be chained together before the physical loss component to provide it with the trajectories.\todo{This feels like a nice place for a data flow diagram}
 
+We consider a number of choices for these two functions comparing their behaviour near known minima, and testing for convexity by randomly sample pairs of points in the embedding space determine if the inequality,
 
-% Then discuss auto-diff and the physical systems we chose to fit toward and why.
-% How do the systems we fit towards relate to the through-line system?
-% Different loss functions we chose to explore and why
-% How we compare different loss functions
-% What we did, how we built loss functios
+\begin{equation}
+  f\left(\frac{x+y}{2}\right) \le \frac{f(x)+f(y)}{2}
+\end{equation}
 
-\todo{Make the choice of embedding a thing we talk about in results}
-\todo{Again wouldn't it be call to talk about symmetries here}
+holds near known minima points. \textbf{OR} To test the value of the second derivative of the function.
+
+We also explore these systems through applying an optimiser directly to the space to determine their suitability.
+
+\todo{Again wouldn't it be cool to talk about symmetries here}
 
 \subsection{Loss Function in the Training of Neural Networks}
 
-Finally we attempt to apply our chosen loss function and Lagrangian embedding to different architectures of neural network determining their effectiveness at determining
+Finally we apply various loss function and embedding choices to a stand-in neural network observing how the loss varies across training, and the correctness of the outputs.
+
+This involves generating large datasets of different physical systems within the domain of the chosen embedding.
+
+% PRD?
 

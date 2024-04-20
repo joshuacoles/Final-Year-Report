@@ -1,4 +1,5 @@
-*.pdf
+/report.pdf
+
 *.aux
 *.log
 !IOPLaTeXGuidelines.pdf
