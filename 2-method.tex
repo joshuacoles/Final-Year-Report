@@ -1,9 +1,26 @@
 \section{Method}
-
 \subsection{Example Systems}
-% I should reference these but I don't know where
+\label{sec:eg-sys}
 
-\subsubsection{Damped Harmonic Oscillators}
+When testing our model we employ a number of example systems to test various features of the integrator, in different physical scenarios. Each of these is also associated with a specific embedding.
+
+\subsubsection{Damped Forced Harmonic Oscillators}
+
+A damped harmonic oscillator is one of the simplest non-conservative systems which we can model having a non-conservative Lagrangian given by\cite{galleyPrincipleStationaryNonconservative2014},
+
+\begin{equation}
+\begin{aligned}
+  \Lambda &= L - K \\
+  L &= \frac12 m\dot\vbq^2 - \frac12 m\dot\vbq -  \\
+  K &= - \lambda\vbq_- \cdot \dot \vbq_+ + \vbq_- \cdot \vb{F}(t)
+\end{aligned}
+\end{equation}
+
+for a system with mass $m$, spring constant $k$, damping constant $\lambda$ and time dependent force $\vb{F}(t)$. This corresponds with the standard equation of motion,
+
+\begin{equation}
+  m \ddot{\vb x} + \lambda \ddot{\vb x} + k \vb x = \vb F(t).
+\end{equation}
 
 \subsubsection{PRD}
 
@@ -11,16 +28,15 @@
 
 \subsection{Improvements to the \SI{} and their Physical Applications}
 
-Initially the existing \texttt{slimpletic} codebase \cite{originalCode}, the \orgimpl{}, was rewritten using the JAX framework, the \updimpl{}. We chose two key metrics: run-time and accuracy to judge our model against the \orgimpl{} and RK4, a well known non-variational integrator \todo{we should have referenced this already}. 
+Initially the existing \texttt{slimpletic} codebase \cite{originalCode}, the \orgimpl{}, was rewritten using the JAX framework, the \updimpl{}. We chose two key metrics, run-time duration and accuracy, to judge our model against the \orgimpl{} and RK4, a well known non-variational integrator \todo{we should have referenced this already}. 
 
-First to ensure that we maintained the error bounds expected for our model (as per \sref{sec:intro-si}) we generated graphs of fractional energy and momentum error for RK4, the \orgimpl{}, and the \updimpl{}, similar to that done in the original paper.
+First to ensure that we maintained the error bounds expected for our model (as per \sref{sec:intro-si}) we generated graphs of fractional energy and momentum error for Runge-Kutta, the \orgimpl{}, and the \updimpl{}.
 
-Next we create three test-cases to measure performance of the
-integrator and its consequences on experimental capability. These were,
+Next we create three test-cases to measure performance of the integrator and its consequences on experimental capability. These were,
 
 \begin{enumerate}
-	\item Modelling the same system for different timespans by varying $\Delta t$ and $N_{\text{iterations}}$.
-	\item Modelling the same system across different orders of integration $r$.
+	\item Modelling systems for different timespans varying the number of iterations performed by the integrator.
+	\item Modelling the same system across different orders of integration $r$ to determine how the order of our method effects the performance.
 	\item Modelling a collection of similar systems, across different initial conditions.
 \end{enumerate}
 
@@ -52,5 +68,5 @@ Finally we apply various loss function and embedding choices to a stand-in neura
 
 This involves generating large datasets of different physical systems within the domain of the chosen embedding.
 
-% PRD?
+\todo{TALK ABOUT LSTMS}
 

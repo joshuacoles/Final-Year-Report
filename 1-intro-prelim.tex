@@ -101,7 +101,7 @@ To solve this system we follow in the same form as before, aiming to extemise a 
 
 note that only the Euler-Lagrange equation differentiating with respect to $\vbq_-$ survives (or equivalently for $\boldsymbol{\pi}_+$). A more complete explanation of this process, along with a derivation can be found in \cite{galleyClassicalMechanicsNonconservative2013}.
 
-A corresponding form of Noether’s theorem can be shown to hold for these non-conservative systems where the Noether currents evolve in time due to the effect of the non-conservative coupling potential $K$ \cite{galleyPrincipleStationaryNonconservative2014}.
+A corresponding form of Noether's theorem can be shown to hold for these non-conservative systems where the Noether currents evolve in time due to the effect of the non-conservative coupling potential $K$ \cite{galleyPrincipleStationaryNonconservative2014}.
 
 \subsection{The \SI}
 \label{sec:intro-si}
@@ -221,18 +221,7 @@ Dealing computationally with non-conservative Lagrangians $\Lambda$, for example
   E: \R^n \to \mathbb{L}
 \end{equation}
 
-where $E$ is a chosen embedding function and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. The choice of embedding necessarily restricts and dictates the systems which the system can deal with thus its choice is crucial in the design of any system.
-
-For example one could choose to model possibly damped harmonic oscillators using the embeddings function,
-
-\begin{equation}
-\begin{gathered}
-  E_{\text{DHO}} : \R^3 \to \mathbb{L} \\
-  E(m, k, \lambda) = \frac12 m\dot\vbq^2 - \frac12 m\dot\vbq - \lambda\dot \vbq_+\vbq_-
-\end{gathered}
-\end{equation}
-
-where we would place some additional requirements on our embedding domain based on our physical knowledge of the system, for example that the mass $m$ and spring constant $k$.
+where $E$ is a chosen embedding function and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. The choice of embedding necessarily restricts and dictates the systems which the system can deal with thus its choice is crucial in the design of any system. Discussions of different embeddings can be found in \sref{sec:eg-sys}. An embedding can either be chosen to represent a system specifically by its physical parameters, or by some arbitrary function approximation scheme such as Fourier series or Taylor expansions.
 
 \subsection{Automatic-Differentiation, XLA, and Google's JAX}
 \label{sec:intro-autodiff}
