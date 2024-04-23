@@ -6,17 +6,17 @@ Neural networks (NNs) and other machine learning (ML) models are becoming an inc
 
 One method of training ML models involves the construction of a loss functions, or equivalently reward functions, which frames the training process as a high-dimensionality optimisation problem. In this setting the various parameters of the model are varied such as to minimise the aggregate loss of the models action over a large collection of inputs, compared to outputs. It is thus the loss function that grounds the model in a given problem. Their construction varies but they exhibit some general characteristics as will be discussed.
 
-% TODO: merge these two paragraphs
 % Question: What is a variational vs Sympletic Integration
 % See DT1 for good complementary references and explantion here
 The \SI{} (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of the the \SymI{}, a conservative variational integrator, which enables numerical integration of non-conservative systems that exhibits well defined bounds on the error in the energy and other conserved quantities of the system. These are based on the non-conservative action approach developed by Galley\cite{galleyClassicalMechanicsNonconservative2013} and Galley et al.\cite{galleyPrincipleStationaryNonconservative2014}.
 
 \SymI{} are numerical integrators for Hamiltonian systems which have the property of preserving the canonical symplectic 2-form of the system. % Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
-This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others \todo{Cite papers, some from DT2, some of my own} as they will by this nature,  preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
+This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others
+%\todo{Cite papers, some from DT2, some of my own}
+ as they will by this nature,  preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
 
 
-% TODO: This feels a little stilted still. Why cant SymPy use automatic differentiation?
-Currently the \SI{} is primarily implemented using computer algebra systems such as SymPy\cite{sympy} which allow for the computation of derivatives and integrals of mathematical expressions. These are general systems and are effective at working with mathematical expressions but pose limitations when seeking to increase computational speed or scale up to larger systems. Automatic-differentiation techniques are a collection of computational methods for the determination of the differential of large classes of \enquote{regular} scientific code in an efficient and accurate manner.
+Currently the \SI{} is primarily implemented using computer algebra systems such as SymPy\cite{sympy} which express and work with  mathematical expressions symbolically and allow for the computation of derivatives and integrals. These are general systems and are effective at working with mathematical expressions but pose limitations when seeking to increase computational speed or scale up to larger systems. Automatic-differentiation techniques are a collection of computational methods for the determination of the derivatives of large classes of \enquote{regular} scientific code in an efficient and accurate manner.
 
 % Aside: I want to keep consistent terminology here. I quite like physics based neural networks
 In this paper we focus on taking the existing mathematical framework of the \SI{} and adapting it to use more advanced computational methods and making it amenable to \autodiff{} to enable a wide class of new applications. These range from scalability to larger systems, for example in molecular dynamics, to its use as the foundation of a number of physics based loss functions which we will compare for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight.
@@ -106,12 +106,18 @@ A corresponding form of Noether's theorem can be shown to hold for these non-con
 \subsection{The \SI}
 \label{sec:intro-si}
 
-% Setup system
-% TOOD: Rephrase this to be variational integrators in general
+The \SI{} is an adaption of a symplectic integrators to non-conservative Lagrangian mechanics, symplectic integrators being those which preserve the canonical symplectic 2-form of the system $dp \wedge dq$ and thus preserve many desired properties in integration.
 
-To understand the \SI{} method we first consider the application of the \SymI{} to a traditional conservative system\footnote{This explanation takes its path from an unpublished paper by Tsang et al\cite{tsangVariationalSymplecticIntegrators}}. As before consider a system with $N$ degrees of freedom represented by some $\vbq \in \R^N$. We take that this system is governed by some Lagrangian, $L(\vbq, \dot{\vbq}, t) \in \R$.
+Thus to understand the \SI{} method we first consider the application of a symplectic integrators to a traditional conservative system\footnote{This explanation takes its path from an unpublished paper by Tsang et al.\cite{tsangVariationalSymplecticIntegrators}}. As before consider a system with $N$ degrees of freedom represented by some $\vbq \in \R^N$. We take that this system is governed by some Lagrangian, $L(\vbq, \dot{\vbq}, t) \in \R$.
 
-With this setup we now choose to apply two successive procedures to our extremal path $\vb q(t)$, piecewise breakdown and discretisation with an aim to determine it numerically.
+With this setup we now choose to apply two successive procedures to our extremal path $\vb q(t)$, first piecewise breakdown and then discretisation of the action itself. It is this ordering that differentiates this symplectic method from more traditional integrators such as Runge-Kutta \cite{devriesFirstCourseComputational2011} (as can be seen in \fref{fig:integrator-compare}) which solve similar systems by discretising the final equations of motion rather than the action.
+
+\begin{figure}[t]
+  \label{fig:integrator-compare}
+  \includegraphics[width=\columnwidth]{figures/dho_r_runtime_linear.pdf}
+  \caption{TODO}
+\end{figure}
+
 
 To start we break the trajectory down piecewise into a collection of $M$ sub-paths $\gamma_{n \in [M - 1]}$ where $[A] = \set{0, \dots, A}$, each defined on some portion of the whole timespan $[t_n, t_{n + 1}] \subset [t_i, t_f] \subset \R$ such that they cover it completely with overlaps only at the boundaries of the intervals. These together are such that the there is the correspondence,
 
@@ -134,11 +140,14 @@ We now turn to the discretisation method itself. This is done using the Galerkin
   t^{(i)}_n = t_n + (1 + x_i)\frac{\Delta t}{2}
 \end{equation}
 
-where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. A choice for a given $r$ provides slimplectic maps that are accurate up an order $2r + 2$.
+% NOTE: Orders defined here
 
-These allow us to approximate the path of the system within this quadrature using the associated cardinal functions for the GGL quadrature, labelled $\phi(t)$, as \(\vb q(t) = \phi(t) + \Or((\Delta t)^{r + 2})\) \todo{What does DT1 actually mean in this bit??? Bottom of pg2col1}. These provide a suitable approximation for the path derivative $\dot{\vb q}$ by the use the derivative matrix,
+where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. For a given choice of $r$ this provides slimpletic maps that are accurate up an order $2r + 2$. In turn we also define the interior points $\vbq_n^{(i)} = \vbq(t^{(i)}_n)$ to each piecewise trajectory.
+
+These allow us to approximate the path of the system within this quadrature using the associated cardinal functions for the GGL quadrature, labelled $\phi(t)$, as \(\vb q(t) = \phi(t) + \Or((\Delta t)^{r + 2})\). These provide a suitable approximation for the path derivative $\dot{\vb q}$ by the use the derivative matrix,
 
 \begin{equation}
+\label{eq:dij}
   D_{ij} = \begin{cases}
   	\dfrac{(r + 1)(r + 2)}{2\Delta t} &i = j = 0 \\\\
   	-\dfrac{(r + 1)(r + 2)}{2\Delta t} & i = j = r + 1 \\\\
@@ -166,14 +175,14 @@ where the label the approximate expression $L_d^n$ and where $w_i$ are the quadr
   w_i = \frac{\Delta t}{(r + 1)(r + 2)(P_{r + 1}(x_i))^2}
 \end{equation}
 
-Equation \eqref{eq:discr-action-1} strung together across the different piecewise sub-trajectories defined in Equation \eqref{eq:pw-traj} gives us the total discretised action of the system, shown in Equation \eqref{eq:discr-action-2}, that sets variational integrators \todo{is this sympl or variational} apart from their \todo{rant about other integrators at the start of this section} more general counterparts. 
+Equation \eqref{eq:discr-action-1} strung together across the different piecewise sub-trajectories defined in equation \eqref{eq:pw-traj} gives us the total discretised action of the system, shown in Equation \eqref{eq:discr-action-2}, that sets sympletic integrators apart from their more general counterparts. 
 
 \begin{equation}
 \label{eq:discr-action-2}
   S_d = \sum_{n = 0}^{M} \sum_{i = 0}^{r + 1} w_i L(q_{n}^{(i)}, \dot\phi_{n}^{(i)}, t_{n}^{(i)})
 \end{equation}
 
-From here we then extremise this approximate path with respect to the mutual and interior \todo{have I used this terminology before?} points to obtain the equations of motion of the system as,
+From here we then extremise this approximate path with respect to the mutual and interior points to obtain the equations of motion of the system as,
 
 \begin{gather}
 	\frac{\p L_d^{n-1}}{\p q_n} + \frac{\p L_d^{n}}{\p q_n} = 0 \\
@@ -211,7 +220,7 @@ A loss function traditionally takes the form, $\mathrm{loss} = f(y_{\text{true}}
 
 Loss functions in PINNs are often comprised of two components. First there is the prediction or physical loss which may for example be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Secondly there a regularisation loss term which helps to penalise overfitting to the training data, expressed as \enquote{complexity}, within the model. This might be implemented as an $L^2$  of a vector containing all parameters of the model.
 
-Optimising this loss function can be thought of as a traditional minimisation problem, with common choices of the method being Stochastic gradient descent and Adam\cite{kingmaAdamMethodStochastic2017}. These impose various requirements on the loss function, for example generally that it is differentiable\footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, Lipschitz continuity, and convexity\cite{sraOptimizationMachineLearning2012}.
+Optimising this loss function can be thought of as a traditional minimisation problem, with common choices of the method being Stochastic gradient descent and Adam\cite{kingmaAdamMethodStochastic2017}. These impose various requirements on the loss function, for example generally that it is differentiable\footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, Lipschitz continuity, and convexity\cite{sraOptimizationMachineLearning2012}. The rate at which these methods apply gradient based updates is determined a provided learning rate, which will often be varied through training to quickly move towards minima during the initial stages, then tuned down to avoid \enquote{jumping} over the minima as we close in on the optimal solution.
 
 \subsection{Lagrangian Embeddings}
 
@@ -221,7 +230,9 @@ Dealing computationally with non-conservative Lagrangians $\Lambda$, for example
   E: \R^n \to \mathbb{L}
 \end{equation}
 
-where $E$ is a chosen embedding function and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. The choice of embedding necessarily restricts and dictates the systems which the system can deal with thus its choice is crucial in the design of any system. Discussions of different embeddings can be found in \sref{sec:eg-sys}. An embedding can either be chosen to represent a system specifically by its physical parameters, or by some arbitrary function approximation scheme such as Fourier series or Taylor expansions.
+where $E$ is a chosen embedding function and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. The choice of embedding necessarily restricts and dictates the systems which the system can deal with thus its choice is crucial in the design of any system. Discussions of different embeddings used in this paper can be found in \sref{sec:eg-sys}. An embedding can either be chosen to represent a system specifically by its physical parameters, or by some arbitrary function approximation scheme such as Fourier series or Taylor expansions.
+
+It should be noted that these embeddings often will not have a unique correspondence with physical Lagrangians, ie the map is not injective up to physical behaviour. This has implications for optimisation in creating multiple minima as will be discussed.
 
 \subsection{Automatic-Differentiation, XLA, and Google's JAX}
 \label{sec:intro-autodiff}

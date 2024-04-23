@@ -1,14 +1,19 @@
 \section{Method}
-\subsection{Example Systems}
+%\subsection{Example Systems}
+%\label{sec:eg-sys}
+%
+%When testing our model we employ a number of example systems to test various features of the integrator, in different physical scenarios. Each of these is also associated with a specific embedding.
+
+%\subsubsection{Damped Forced Harmonic Oscillators}
+\subsection{Damped Forced Harmonic Oscillators}
 \label{sec:eg-sys}
 
-When testing our model we employ a number of example systems to test various features of the integrator, in different physical scenarios. Each of these is also associated with a specific embedding.
+The main system used in the testing and evaluation of the system is the Damped Forced Harmonic Oscillators. It is one of the simplest non-conservative systems which we can model having a non-conservative Lagrangian given by\cite{galleyPrincipleStationaryNonconservative2014},
 
-\subsubsection{Damped Forced Harmonic Oscillators}
-
-A damped harmonic oscillator is one of the simplest non-conservative systems which we can model having a non-conservative Lagrangian given by\cite{galleyPrincipleStationaryNonconservative2014},
+%A damped harmonic oscillator is one of the simplest non-conservative systems which we can model having a non-conservative Lagrangian given by\cite{galleyPrincipleStationaryNonconservative2014},
 
 \begin{equation}
+\label{eq:dho-sys-embedding}
 \begin{aligned}
   \Lambda &= L - K \\
   L &= \frac12 m\dot\vbq^2 - \frac12 m\dot\vbq -  \\
@@ -22,51 +27,39 @@ for a system with mass $m$, spring constant $k$, damping constant $\lambda$ and 
   m \ddot{\vb x} + \lambda \ddot{\vb x} + k \vb x = \vb F(t).
 \end{equation}
 
-\subsubsection{PRD}
-
-\subsubsection{Large coupled springs}
+%\subsubsection{Lattice of Springs}
+%
+%\todo{Todo}
 
 \subsection{Improvements to the \SI{} and their Physical Applications}
 
-Initially the existing \texttt{slimpletic} codebase \cite{originalCode}, the \orgimpl{}, was rewritten using the JAX framework, the \updimpl{}. We chose two key metrics, run-time duration and accuracy, to judge our model against the \orgimpl{} and RK4, a well known non-variational integrator \todo{we should have referenced this already}. 
+Initially the existing \texttt{slimpletic} codebase \cite{originalCode}, the \orgimpl{}, was rewritten using the JAX framework, the \updimpl{}. We chose two key metrics, run-time duration and accuracy, to judge our model against the \orgimpl{} and Runge-Kutta to various orders.
 
-First to ensure that we maintained the error bounds expected for our model (as per \sref{sec:intro-si}) we generated graphs of fractional energy and momentum error for Runge-Kutta, the \orgimpl{}, and the \updimpl{}.
+First to ensure that we maintained the error bounds expected for our model (as per \sref{sec:intro-si}) we compared the fractional energy and momentum error for Runge-Kutta, the \orgimpl{}, and the \updimpl{} across the time evolution of a physical system.
 
-Next we create three test-cases to measure performance of the integrator and its consequences on experimental capability. These were,
+Next we create two test-cases to measure performance of the integrator and its consequences on experimental capability. These were,
 
 \begin{enumerate}
 	\item Modelling systems for different timespans varying the number of iterations performed by the integrator.
 	\item Modelling the same system across different orders of integration $r$ to determine how the order of our method effects the performance.
-	\item Modelling a collection of similar systems, across different initial conditions.
+%	\item Modelling a collection of similar systems, across different initial conditions.
 \end{enumerate}
 
-The first two of these are designed to test the scaling behaviours of our model to provide insight into its applicability to larger systems, the third acting as a more realistic test case of its use in actual experimental physics. Finally we simulate a large coupled spring system to show the applicability of the observed scaling laws to physical experiments.
+These are designed to test the scaling behaviours of our model to provide insight into its applicability to larger systems, the third acting as a more realistic test case of its use in actual experimental physics. %Finally we simulate a large coupled spring system to show the applicability of the observed scaling laws to physical experiments.
 
-\subsection{Applications to Loss Functions}
+TOOD: There will be an additional test of modelling a lattice of DHOs modelling a physical system here but this came to me too late.
 
-Taking this \updimpl{} we then explore its different uses as a loss function for physical systems. To start we consider only the form of the loss function, as well as the embedding function to use.
+\subsection{Applications to Loss Functions and Optimisation}
 
-\todo{I probably want a table for embeddings we use}
+Taking this \updimpl{} we then explore its different uses as a loss function for physical systems, in combination with different embedding functions.
 
-While these are distinct components of a learning system, they are heavily linked as ideally we would define the physical components of our loss function primarily in terms of the trajectories, rather than the values of the embedding vector itself. Hence the embedding function and slimpletic integrator must be chained together before the physical loss component to provide it with the trajectories.\todo{This feels like a nice place for a data flow diagram}
+While these are distinct components of a learning system, they are heavily linked as ideally we would define the physical components of our loss function primarily in terms of the trajectories, rather than the values of the embedding vector itself. Hence the embedding function and slimpletic integrator must be chained together before the physical loss component to provide it with the trajectories. We consider a number of choices for these two functions comparing their behaviour near known minima looking for convexity and smoothness.
 
-We consider a number of choices for these two functions comparing their behaviour near known minima, and testing for convexity by randomly sample pairs of points in the embedding space determine if the inequality,
+% TODO
+%We also explore these systems through applying an optimiser directly to the space to determine their suitability.
 
-\begin{equation}
-  f\left(\frac{x+y}{2}\right) \le \frac{f(x)+f(y)}{2}
-\end{equation}
-
-holds near known minima points. \textbf{OR} To test the value of the second derivative of the function.
-
-We also explore these systems through applying an optimiser directly to the space to determine their suitability.
-
-\todo{Again wouldn't it be cool to talk about symmetries here}
-
-\subsection{Loss Function in the Training of Neural Networks}
+\subsection{Loss Function in the Training of PINNs}
 
 Finally we apply various loss function and embedding choices to a stand-in neural network observing how the loss varies across training, and the correctness of the outputs.
 
-This involves generating large datasets of different physical systems within the domain of the chosen embedding.
-
-\todo{TALK ABOUT LSTMS}
-
+This model was based on the \enquote{long short-term memory} layer \cite{hochreiterLongShortTermMemory1997} which is frequently used in time-series analysis and thus chosen as a suitable basis of our model. This involves generating large datasets of different physical systems within the domain of the chosen embedding as will be discussed.
