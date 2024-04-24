@@ -35,3 +35,5 @@ To enhance the model's performance, incorporating physically known a priori info
 In the same vein, a suitably trained neural network could be constructed using this method to identify symmetries in observational data or recognise patterns it has previously been exposed to in new observational data. This suggests potential applications in domains such as astrophysics, where there is a large availability of data to train a model, but also difficulties in obtaining a complete dataset for any one experiment.
 
 \section{Conclusion}
+
+In this paper we have put forward a more optimal implementation of the Slimpletic Integrator, which is capable of scaling to large scale physical simulations while preserving bounded fractional error in the energy. We have shown this implementation has applications in the construction of a loss function for physics informed neural networks, and presented a simple model which shows that this approach has promise for identifying non-conservative Lagrangians from observational data. More work is required to explore better encodings of physical invariants in the loss function and model structure.
