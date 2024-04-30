@@ -209,32 +209,37 @@ This composition is useful as it can be shown that, with sufficient complexity, 
 \subsection{Loss functions}
 \label{sec:intro-lf}
 
-Loss functions are the primary learning method of neural networks, and in PINNs, act as the place where physics steps in to connect our computational model to reality.
-Loss functions a attempting to minimise an arbitrary loss value computed from the parameters and a large dataset of known inputs and outputs for the model.
+The primary method of training ML models involves the construction of a loss function or equivalently reward function. This frames the training process as a high-dimensionality optimisation problem. In this setting, the various parameters of the model are varied such as to minimise the aggregate loss of the model's action over a large collection of inputs when compared to known corresponding outputs. It is thus the loss function that grounds the model in a given problem. Their construction varies but they exhibit some general characteristics as will be discussed.
+
+
+Loss functions are the primary learning method of neural networks and, in PINNs, act as the place where physics steps in to connect our computational model to reality. As mentioned they are used to construct a high-dimensionality optimisation problem where we seek to minimise arbitrary loss value computed from the parameters, aggregated over a large collection of inputs when compared to known corresponding outputs.
 
 A loss function traditionally takes the form, $\mathrm{loss} = f(y_{\text{true}}, y_{\text{pred}})$ where $f$ is some chosen function and $y_{\text{pred}}$ and $y_{\text{true}}$ are both real vectors in the output space of the model, representing the known models output and the known true output respectively.
 
-Loss functions in PINNs are often comprised of two components. First there is the prediction or physical loss which may for example be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Secondly there a regularisation loss term which helps to penalise overfitting to the training data, expressed as \enquote{complexity}, within the model. This might be implemented as an $L^2$  of a vector containing all parameters of the model.
+Loss functions in PINNs are often comprised of two components. First there is the prediction or physical loss which may, as mentioned, be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Secondly there a regularisation loss term which helps to penalise overfitting to the training data, expressed as \enquote{complexity}, within the model. This might be implemented as an $L^2$ of a vector containing all parameters of the model.
 
-Optimising this loss function can be thought of as a traditional minimisation problem, with common choices of the method being Stochastic gradient descent and Adam\cite{kingmaAdamMethodStochastic2017}. These impose various requirements on the loss function, for example generally that it is differentiable\footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, Lipschitz continuity, and convexity\cite{sraOptimizationMachineLearning2012}. The rate at which these methods apply gradient based updates is determined a provided learning rate, which will often be varied through training to quickly move towards minima during the initial stages, then tuned down to avoid \enquote{jumping} over the minima as we close in on the optimal solution.
+Optimising this loss function can be thought of as a traditional minimisation problem, with common choices of the method being Stochastic gradient descent and Adam\cite{kingmaAdamMethodStochastic2017}. These impose various requirements on the loss function, for example generally that it is differentiable \footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, Lipschitz continuity, and convexity \cite{sraOptimizationMachineLearning2012}. The rate at which these methods apply gradient based updates is determined a provided learning rate, which will often be varied through training to quickly move towards minima during the initial stages, then tuned down to avoid \enquote{jumping} over the minima as we close in on the optimal solution.
 
 \subsection{Lagrangian Embeddings}
 
-Dealing computationally with non-conservative Lagrangians $\Lambda$, for example as an output of a PINN, requires defining some mapping from a collection of real 	numbers, to a form of $\Lambda(\vbq, \dot\vbq, t)$. This can be thought of as a function,
+To work with non-conservative Lagrangians $\Lambda$ computationally, for example as the output of a PINN, or one of the inputs of a loss function, we must define some mapping from a collection of real numbers, to a form of $\Lambda(\vbq, \dot\vbq, t)$. This can be thought of as a function,
 
 \begin{equation}
   E: \R^n \to \mathbb{L}
 \end{equation}
 
-where $E$ is a chosen embedding function and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. The choice of embedding necessarily restricts and dictates the systems which the system can deal with thus its choice is crucial in the design of any system. Discussions of different embeddings used in this paper can be found in \sref{sec:eg-sys}. An embedding can either be chosen to represent a system specifically by its physical parameters, or by some arbitrary function approximation scheme such as Fourier series or Taylor expansions.
+where $E$ is known as an \enquote{embedding function} and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. 
+The choice of embedding necessarily restricts and dictates the systems which the system can deal with, and hence our choice of embedding is crucial, discussions of different embeddings used in this paper can be found in \sref{sec:eg-sys}.
+
+There are two broad approaches to designing an embedding function. Either one can be chosen to represent a specific system by its physical parameters, or a more broad class of systems can be represented by some arbitrary function approximation scheme such as Fourier series or Taylor expansion around a point.
 
 It should be noted that these embeddings often will not have a unique correspondence with physical Lagrangians, ie the map is not injective up to physical behaviour. This has implications for optimisation in creating multiple minima as will be discussed.
 
 \subsection{Automatic-Differentiation, XLA, and Google's JAX}
 \label{sec:intro-autodiff}
 
-Automatic-differentiation is the process of computing the differential of \enquote{regular} code, ie. code that is substantially similar to code that one would normally write, with respect to one or more of its arguments. Google's JAX library \cite{jax2018github} contains one implementation of this in Python which works by passing \enquote{tracers} into the Python code which record the actions done to them such that a differential can be calculated.
+Automatic-differentiation is the process of computing the differential of \enquote{regular} code with respect to one or more of its arguments. Google's JAX library \cite{jax2018github} contains one implementation of this in Python which works by passing \enquote{tracers} into the Python code that record the actions done to them such that an overall differential can be calculated.
 
-JAX also incorporates the XLA (Accelerated Linear Algebra) library \cite{openxla-xla} where it uses similar tracing methods to translate a restricted, but large, subset of Python code into a series of low-level eifficent operations which can be executed at speed on the GPU or CPU.
+JAX also incorporates the XLA (Accelerated Linear Algebra) library \cite{openxla-xla} where it uses similar tracing methods to translate a restricted, but large, subset of Python code into a series of low-level efficient operations which can be executed at speed on the GPU or CPU.
 
-These two technologies together show great promise in the fields of machine learning and simulation techniques as they allow for code that would previously have to be written in low-level languages such as C or C++ to be expressed in Python with significantly reduced overhead at runtime, and easier use by researchers.
+These two technologies together show great promise in the fields of machine learning and physics simulation as they allow for code that would previously have to be written in low-level languages such as C or C++ to be expressed in Python with significantly reduced overhead at runtime, and easier use by researchers.
