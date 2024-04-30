@@ -205,16 +205,18 @@ Continuing the consideration of Noether currents from prior sections, it can be 
 \subsection{Physics Informed Neural Networks}
 \label{sec:intro-pinn}
 
-Physics informed neural networks (PINNs) are neural networks which include physical knowledge in their training processes \cite{raissiPhysicsInformedDeep2017}. Their most common application is to solving PDEs \cite{luDeepXDEDeepLearning2021,mengCompositeNeuralNetwork2020} where we take physically derived knowledge of the system as a prior in training and fit a neural network to solve some PDE incorporating the residuals into the models loss (loss functions will be discussed in more depth in \sref{sec:intro-lf}).
+Physics informed neural networks (PINNs) are neural networks which include physical knowledge in their training processes \cite{raissiPhysicsInformedDeep2017}.
+Their most common application is in solving PDEs \cite{luDeepXDEDeepLearning2021,mengCompositeNeuralNetwork2020} where we take physically derived knowledge of the system as a prior in training and train the neural netwwork with a loss function incoporating the residuals from the initial and boundary conditions (loss functions will be discussed in more depth in \sref{sec:intro-lf}).
 
-Neural networks more generally are a collection of linear and non-linear components composed together to form complex non-linear functions. At their base level the linear components can be expressed as the simple linear equation \(\vb{y} = W\vb{x} + \vb{b}\) where $W$ is a collection of weights for this component and $\vb{b}$ the biases; and the non-linear components are functions such as sigmoid or $\tanh$ which are included to stop collapse to linearity for the whole composition. These weights, biases, and other variables within the model constitute the model's \emph{parameters}.
+Neural networks more generally are a collection of linear and non-linear components composed together to form complex non-linear functions. At their base level the linear components can be expressed as the simple linear equation \(\vb{y} = W\vb{x} + \vb{b}\) where $W$ is a matrix of weights for this component and $\vb{b}$ the biases. The non-linear components are functions such as sigmoid or $\tanh$ which stop collapse to linearity for the whole composition, allowing for non-trivial behaviour. These weights, biases, and other variables within the model constitute the model's \emph{parameters}.
 
-This composition is useful in that it can be shown that, with sufficient complexity, these forms are dense in the space of Borel measurable functions and hence can take the place of almost any physical function or mathematical procedure \cite{hornikMultilayerFeedforwardNetworks1989}.
+This composition is useful as it can be shown that, with sufficient complexity, these forms are dense in the space of Borel measurable functions and hence can take the place of almost any physical function or mathematical procedure \cite{hornikMultilayerFeedforwardNetworks1989}.
 
 \subsection{Loss functions}
 \label{sec:intro-lf}
 
-Loss functions are the primary leaning method of neural networks and in PINNs act as the place where physics steps in to connect our computational model to reality. Loss functions work by attempting to minimise an arbitrary loss value computed from the parameters and a large dataset of known inputs and outputs for the model.
+Loss functions are the primary learning method of neural networks, and in PINNs, act as the place where physics steps in to connect our computational model to reality.
+Loss functions a attempting to minimise an arbitrary loss value computed from the parameters and a large dataset of known inputs and outputs for the model.
 
 A loss function traditionally takes the form, $\mathrm{loss} = f(y_{\text{true}}, y_{\text{pred}})$ where $f$ is some chosen function and $y_{\text{pred}}$ and $y_{\text{true}}$ are both real vectors in the output space of the model, representing the known models output and the known true output respectively.
 
