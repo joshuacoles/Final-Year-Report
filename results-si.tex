@@ -2,25 +2,25 @@
 \label{sec:results-si}
 
 \begin{figure}[t]
-\label{fig:dho_energy_bounds}
   \includegraphics[width=\columnwidth]{figures/dho_energy_momenta_fractional_err.pdf}
   \caption{A comparison of the error in the energy, top, and momenta, bottom, as a fraction of the known analytic solution of the system, of the \updimpl{} simulating a damped harmonic oscillator. One can clearly observe that the fractional energy error is bounded and displays the oscillating behaviour that we expect from previous work, whereas the momenta error does not display such behaviour. This plot is based off its equivalent in the original paper \cite[Figure 2, bottom]{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}.}
+\label{fig:dho_energy_bounds}
 \end{figure}
 
 As discussed we first verify that the required errors orders are preserved by the \updimpl{} when compared to the \orgimpl{} and traditional non-variational integrators. This can be seen in \fref{fig:dho_energy_bounds} where the fractional error of the system from the true analytic solution is compared directly against the performance of the \orgimpl{} and Runge-Kutta order 2 and 4. We clearly observe that the fractional energy error remains bounded across the timeframe of iteration. This is not the case for the fractional momenta error however as fixed-time-step variational methods such as those implemented cannot be both slimpletic-momentum and momentum-energy preserving \cite{zhongLiePoissonHamiltonJacobiTheory1988}.
 
 \begin{figure}[t]
-  \label{fig:dho-n-runtime}
   \includegraphics[width=\columnwidth]{figures/dho_n_runtime.pdf}
   \caption{A comparison of running a damped harmonic oscillator system for various numbers of iterations, with $r = 2, \Delta t = 0.1$. The \updimpl{} runtime is split into two components where \enquote{JIT time} represents the one time fixed cost of compiling the function (see \sref{sec:intro-autodiff}) and \enquote{Computation time} represents the actual time spent on computation.
   Each value is a mean of 4 runs, with the \orgimpl{} being cut off early due after $> 20$ minutes runtime for the next sample.}
+  \label{fig:dho-n-runtime}
 \end{figure}
 
 \begin{figure}[t]
-  \label{fig:dho-r-runtime}
-  \includegraphics[width=\columnwidth]{figures/dho_r_runtime_linear.pdf}
+  \includegraphics[width=\columnwidth]{figures/dho_r_runtime.pdf}
   \caption{A comparison of running a damped harmonic oscillator system for various values of $r$, the order of the GGL quadrature, with $\Niter = 500, \Delta t = 0.1$. Each result being a mean of 4 independent runs.
 	For both implementations we split the overall time into setup and computation as changing the method order requires re-discretising the Lagrangian and thus non-trivial work under both implementations.}
+  \label{fig:dho-r-runtime}
 \end{figure}
 
 Next we explored the time complexity of the system in terms of the iteration count, $N_{\text{iter}}$, and GGL quadrature order, $r$. These are important to physical applications as they determine the limits of iteration accuracy when iterating over large timescales, error scaling as $(\Delta t)^{2r + 2}$ and total timeframe being $N_{\text{iter}} \Delta t$.
