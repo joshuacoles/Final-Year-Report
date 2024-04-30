@@ -30,12 +30,12 @@ Focusing first on the time complexity in $N_{\text{iter}}$ as shown in \fref{fig
 This pattern is seen also in \fref{fig:dho-r-runtime} when investigating the time-complexity in the order of the method. Again the JIT time remains roughly constant across the domain tested, and though it starts out initially higher than than the \orgimpl{}'s setup costs, the \orgimpl{}'s computation time quickly swamps this fixed cost.
 Similar to the behaviour in $\Niter$, the computation time for the \updimpl{} is also linear $r$ , remaining insignificant in the overall runtime. This is in comparison with the \orgimpl{} where the setup time grows as $\Or(r^n)$ with $n = {2.31 \pm 0.15}$ and the computation time as $\Or(r^m)$ with $m={1.490 \pm 0.070}$.
 
-TODO: How do we report sig. fig again?
+%TODO: How do we report sig. fig again?
 
 It should be noted that while increasing the order of the method will increase the precision, at higher orders we start encountering issues with the fixed precision \texttt{float64} type used for calculation in the \updimpl{} compared the the arbitrary precision numerics employed in the \orgimpl{}.
 Still however this represents an overall improvement in accuracy in physically meaningful simulations as the required precision could be more readily attained by decreasing $\Delta t$ rather than increasing $r$, avoiding the blowup of runtime observed in the \orgimpl{}, or the degradation of precision at high $r$ in the \updimpl{}. 
 
-TODO: This is where the lattice modelling will go.
+%TODO: This is where the lattice modelling will go.
 
 %To end the direct application of the \updimpl{} to physical systems we exploit its ability to work on large collections of similar systems, across different choices of physical parameters and initial conditions without incurring the fixed costs discussed prior. To display this we choose to simulate a large collection of double pendulums, with damping on the fixed pendulum, from different initial conditions to observe the chaotic behaviour as seen in \fref{fig:ddp}.
 

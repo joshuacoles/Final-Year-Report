@@ -1,9 +1,12 @@
 \subsection{Loss Functions and Optimisation}
 \label{sec:res-lf}
 
-Moving now onto the loss function and choice of Lagrangian embedding function. We explored a number of loss functions through a combination of gradient-descent and visual inspection. A wide number of loss functions were tested however focusing on those surrounding systems of harmonic oscillators, we settled on DHO system specific embedding shown in \eqref{eq:dho-sys-embedding}, labelled DHO 3, and an adaption where an additional embedding parameter $\alpha$ was introduced as pre-factor on the entire non-conservative Lagrangian $\Lambda$, labelled DHO 4. These were paired with a number of simple loss functions, \tref{table:loss-fns}, drawing from physical knowledge and existing convention for neural network loss functions.
+Moving now onto the loss function and choice of Lagrangian embedding function. We explored a number of loss functions through a combination of gradient-descent and visual inspection.
+A wide number of loss functions were tested, however focusing on those surrounding systems of harmonic oscillators, we settled on DHO system specific embedding shown in \eqref{eq:dho-sys-embedding}, labelled DHO 3.
+As well an adaption where an additional embedding parameter $\alpha$ was introduced as pre-factor on the entire non-conservative Lagrangian $\Lambda$, labelled DHO 4. 
+These were paired with a number of simple loss functions, \tref{table:loss-fns}, drawing from physical knowledge and existing convention for neural network loss functions.
 
-First we perform a visual inspection of the the Simple RMS loss function at various scales in DHO 3 and 4 as seen in \fref{fig:loss-function-behaviour}. From this we observe mild non-convexity which is of concern
+First we perform a visual inspection of the Simple RMS loss function at various scales in DHO 3 and 4 as seen in \fref{fig:loss-function-behaviour}. From this we observe mild non-convexity which is of concern
 
 To test how this mild non-convexity translates into optimisation performance we subject a number of combinations to empirical optimisation tests where we attempt to attain a known true embedding from a number of random initial embedding values. \Tref{table:optimisation-results} (see caption for details) shows that that the addition of the global pre-factor $\alpha$ substantially increases the probability of successful convergence.  In addition we see that both the $\vbq$ and $\pi$ values are important in the fitting process from the complete lack of convergence when only $\pi$ is included, and that their relative weight seems to be of little importance at this stage.
 

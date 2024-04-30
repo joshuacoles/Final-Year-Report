@@ -2,7 +2,7 @@
 
 Neural networks (NNs) and other machine learning (ML) techniques are becoming an increasingly important tool in of modern research process. This is due to their wide application in data-intensive problems, and ability to make progress where prior computational methods have proved otherwise intractable.
 
-The primary method of training ML models involves the construction of a loss function or equivalently reward function. This frames the training process as a high-dimensionality optimisation problem. In this setting, the various parameters of the model are varied such as to minimise the aggregate loss of the model's action over a large collection of inputs when compared to known corresponding outputs. It is thus the loss function that grounds the model in a given problem. Their construction varies but they exhibit some general characteristics as will be discussed.
+The primary method of training ML models involves the construction of a loss function or equivalently a reward function. This frames the training process as a high-dimensionality optimisation problem. In this setting, the various parameters of the model are varied such as to minimise the aggregate loss of the model's action over a large collection of inputs when compared to known corresponding outputs. It is thus the loss function that grounds the model in a given problem. Their construction varies but they exhibit some general characteristics as will be discussed.
 
 % Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
 \todo{check with DT about the wording of "canonical symplectic 2-form of the system"}
@@ -13,9 +13,9 @@ This makes them widely applicable to physical fields such as orbital dynamics an
 
 The \SI{} (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of a symplectic integrator which enables numerical integration of non-conservative systems. As with the symplectic integrators, this exhibits well-defined bounds in the fractional error of the energy and other conserved quantities of the system. These are based on the non-conservative action approach developed by Galley \cite{galleyClassicalMechanicsNonconservative2013} and Galley \etall \cite{galleyPrincipleStationaryNonconservative2014}.
 
-Automatic-differentiation techniques are a collection of computational methods for the determination of the derivatives of large classes of \enquote{regular} scientific code in an efficient and accurate manner. In contrast, the \SI{} is currently implemented using computer algebra systems such as SymPy \cite{sympy} which express and work with mathematical expressions symbolically, allowing for the computation of derivatives and integrals. These are general systems and are effective at working with a large range of expressions, but pose limitations when seeking to increase computational speed or scale up to larger, more complex, physical systems.
+Automatic-differentiation techniques are a collection of computational methods for the determination of the derivatives of large classes of \enquote{regular} scientific code in an efficient and accurate manner. In contrast, the \SI{} is currently implemented using computer algebra systems such as SymPy \cite{sympy} which express and work with mathematical expressions symbolically, allowing for the computation of derivatives and integrals. These are general systems and are effective at working with a large range of expressions, but pose limitations when seeking to increase computational speed or to scale up to larger, more complex, physical systems.
 
-In this paper, we focus on taking the existing mathematical framework of the \SI{} and adapting it to use more advanced computational methods and making it amenable to \autodiff{} to enable a wide class of new applications. These range from scalability to larger systems, for example in molecular dynamics\todo{If I am going to use I need to cite}, to its use as the foundation several physics-based loss functions which we will compare for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight.
+In this paper, we focus on taking the existing mathematical framework of the \SI{} and adapting it to use more advanced computational methods and making it amenable to \autodiff{} to enable a wide class of new applications. These range from scaling to larger systems, for example in molecular dynamics\todo{If I am going to use I need to cite}, to its use as the foundation several physics-based loss functions which we will compare for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight.
 
 \section{Preliminaries}
 
@@ -99,7 +99,7 @@ A corresponding form of Noether's theorem can be shown to hold for these non-con
 \subsection{The \SI}
 \label{sec:intro-si}
 
-The \SI{} is an extension of a symplectic integrators to non-conservative Lagrangian mechanics, symplectic integrators being those which preserve the canonical symplectic 2-form of the system $dp \wedge dq$, and thus preserve many desired properties during integration.
+The \SI{} is an extension of a symplectic integrator to non-conservative Lagrangian mechanics, symplectic integrators being those which preserve the canonical symplectic 2-form of the system $dp \wedge dq$, and thus preserve many desired properties during integration.
 
 Hence, to understand the \SI{} method we first consider the application of a symplectic integrators to a traditional conservative system\footnote{This explanation takes its path from an unpublished paper by Tsang \etall \cite{tsangVariationalSymplecticIntegrators}}. As before consider a system with $N$ degrees of freedom represented by some $\vbq \in \R^N$, governed by some Lagrangian, $L(\vbq, \dot{\vbq}, t) \in \R$.
 
@@ -128,7 +128,7 @@ We now turn to the discretisation method itself. This is done using the Galerkin
 
 % NOTE: Orders defined here
 
-where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. For a given choice of $r$ this provides slimpletic maps that are accurate up an order $2r + 2$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}. In turn we also define the $\vbq_n^{(i)} = \vbq(t^{(i)}_n)$ to be the interior points to be the value of each sub-path at each $t^{(i)}_n$. This process can be seen visually in \fref{fig:si-process}.
+where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. For a given choice of $r$ this provides slimpletic maps that are accurate up an order $2r + 2$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}. In turn we also define $\vbq_n^{(i)} = \vbq(t^{(i)}_n)$ to be the value of each sub-path at each $t^{(i)}_n$, which we label interior points. This process can be seen visually in \fref{fig:si-process}.
 
 \begin{figure}[t]
   \includegraphics[width=\columnwidth]{figures/si-process.pdf}
@@ -200,7 +200,7 @@ Continuing the consideration of Noether currents from prior sections, it can be 
 \label{sec:intro-pinn}
 
 Physics informed neural networks (PINNs) are neural networks which include physical knowledge in their training processes \cite{raissiPhysicsInformedDeep2017}.
-Their most common application is in solving PDEs \cite{luDeepXDEDeepLearning2021,mengCompositeNeuralNetwork2020} where we take physically derived knowledge of the system as a prior in training and train the neural netwwork with a loss function incoporating the residuals from the initial and boundary conditions (loss functions will be discussed in more depth in \sref{sec:intro-lf}).
+Their most common application is in solving partial differential equations (PDEs) \cite{luDeepXDEDeepLearning2021,mengCompositeNeuralNetwork2020} where we take physically derived knowledge of the system as a prior in training and train the neural network with a loss function incorporating the residuals from the initial and boundary conditions (loss functions will be discussed in more depth in \sref{sec:intro-lf}).
 
 Neural networks more generally are a collection of linear and non-linear components composed together to form complex non-linear functions. At their base level the linear components can be expressed as the simple linear equation \(\vb{y} = W\vb{x} + \vb{b}\) where $W$ is a matrix of weights for this component and $\vb{b}$ the biases. The non-linear components are functions such as sigmoid or $\tanh$ which stop collapse to linearity for the whole composition, allowing for non-trivial behaviour. These weights, biases, and other variables within the model constitute the model's \emph{parameters}.
 
@@ -218,7 +218,7 @@ A loss function traditionally takes the form, $\mathrm{loss} = f(y_{\text{true}}
 
 Loss functions in PINNs are often comprised of two components. First there is the prediction or physical loss which may, as mentioned, be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Secondly there a regularisation loss term which helps to penalise overfitting to the training data, expressed as \enquote{complexity}, within the model. This might be implemented as an $L^2$ of a vector containing all parameters of the model.
 
-Optimising this loss function can be thought of as a traditional minimisation problem, with common choices of the method being Stochastic gradient descent and Adam\cite{kingmaAdamMethodStochastic2017}. These impose various requirements on the loss function, for example generally that it is differentiable \footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, Lipschitz continuity, and convexity \cite{sraOptimizationMachineLearning2012}. The rate at which these methods apply gradient based updates is determined a provided learning rate, which will often be varied through training to quickly move towards minima during the initial stages, then tuned down to avoid \enquote{jumping} over the minima as we close in on the optimal solution.
+Optimising this loss function can be thought of as a traditional minimisation problem, with common choices of the method being Stochastic gradient descent and Adam \cite{kingmaAdamMethodStochastic2017}. These impose various requirements on the loss function, for example generally that it is differentiable \footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, Lipschitz continuity, and convexity \cite{sraOptimizationMachineLearning2012}. The rate at which these methods apply gradient based updates is determined by a provided learning rate, which will often be varied through training to quickly move towards minima during the initial stages, then tuned down to avoid \enquote{jumping} over the minima as we close in on the optimal solution.
 
 \subsection{Lagrangian Embeddings}
 
