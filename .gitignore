@@ -3,3 +3,9 @@
 *.aux
 *.log
 !IOPLaTeXGuidelines.pdf
+
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
