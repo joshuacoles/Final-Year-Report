@@ -1,5 +1,5 @@
 \documentclass[10pt]{iopart}
-\include{setup}
+\input{setup}
 
 \def\SI{Slimplectic Integrator}
 \def\SymI{{Symplectic integrator}}
@@ -16,7 +16,7 @@
 \author{J D Coles$^1$}
 \address{$^1$ Department of Physics, University of Bath, Claverton Down, Bath BA2 7AY, UK}
 \begin{abstract}
-The Slimpletic Integrator by Tsang et al. \cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} provides fractional error bounds when integrating non-conservative systems. In this paper we present iterations on this method using modern computational techniques improving its computational performance by a factor of $\approx 10^4$, with a small fixed cost, for long-term integrations on the order of $\Niter \approx 10^6$ and orders $r < 40$. We present applications of this work to physically informed loss functions for identifying physical systems from observational data and use these in the training of a physics informed neural network to do this. This network, when trained, predicts Lagrangians that are accurate to an RMS error of $\pm 5 \times 10^{-2}$ in $\vbq$ and $\pm 1 \times 10 ^{-1}$ in $\pi$.
+The Slimpletic Integrator by Tsang et al. \cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} provides fractional error bounds when integrating non-conservative systems. In this paper we present iterations on this method using modern computational techniques improving its computational performance by a factor of $\approx 10^4$, with a small fixed cost, for long-term integrations on the order of $\Niter \approx 10^6$ and orders $r < 40$. We present applications of this work to physically informed loss functions for identifying physical systems from observational data and use these in the training of a physics informed neural network to do this. This network, when trained, predicts Lagrangians that are accurate to an absolute RMS error of $\pm 5 \times 10^{-2}$ in $\vbq$ and $\pm 1 \times 10 ^{-1}$ in $\pi$.
 \end{abstract}
 }]
 
