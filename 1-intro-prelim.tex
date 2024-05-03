@@ -2,20 +2,25 @@
 
 Neural networks (NNs) and other machine learning (ML) techniques are becoming an increasingly important tool in of modern research process. This is due to their wide application in data-intensive problems, and ability to make progress where prior computational methods have proved otherwise intractable.
 
-The primary method of training ML models involves the construction of a loss function or equivalently a reward function. This frames the training process as a high-dimensionality optimisation problem. In this setting, the various parameters of the model are varied such as to minimise the aggregate loss of the model's action over a large collection of inputs when compared to known corresponding outputs. It is thus the loss function that grounds the model in a given problem. Their construction varies but they exhibit some general characteristics as will be discussed.
+The primary method of training ML models involves the construction of a loss function or equivalently a reward function, framing the training process as a high-dimensionality optimisation problem.
+In this setting, the parameters of the model are varied such as to minimise the aggregate loss of the model's action, when taken over a large collection of inputs, compared to known corresponding outputs.
+Thus it is the loss function that grounds the model in a given problem.
+The construction of loss functions varies across applications, but overall they exhibit some general characteristics as will be discussed.
 
 % Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
 \todo{check with DT about the wording of "canonical symplectic 2-form of the system"}
-\SymI{}s are numerical integrators for Hamiltonian systems which preserve the canonical symplectic 2-form of the system. 
-This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others,%
-\todo{Cite papers, some from DT2, some of my own}
- as they will by this nature, preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
+\SymI{}s are numerical integrators for Hamiltonian systems, which preserve the canonical symplectic 2-form of the system. 
+This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others.%
+\todo{Cite papers, some from DT2, some of my own}%
+Consequentially, they will preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
 
-The \SI{} (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of a symplectic integrator which enables numerical integration of non-conservative systems. As with the symplectic integrators, this exhibits well-defined bounds in the fractional error of the energy and other conserved quantities of the system. These are based on the non-conservative action approach developed by Galley \cite{galleyClassicalMechanicsNonconservative2013} and Galley \etall \cite{galleyPrincipleStationaryNonconservative2014}.
+The \SI{} (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of a symplectic integrator, which enables numerical integration of non-conservative systems. As with the symplectic integrators, this exhibits well-defined bounds in the fractional error of the energy, and other conserved quantities of the system. These are based on the non-conservative action approach developed by Galley \cite{galleyClassicalMechanicsNonconservative2013} and Galley \etall \cite{galleyPrincipleStationaryNonconservative2014}.
 
-Automatic-differentiation techniques are a collection of computational methods for the determination of the derivatives of large classes of \enquote{regular} scientific code in an efficient and accurate manner. In contrast, the \SI{} is currently implemented using computer algebra systems such as SymPy \cite{sympy} which express and work with mathematical expressions symbolically, allowing for the computation of derivatives and integrals. These are general systems and are effective at working with a large range of expressions, but pose limitations when seeking to increase computational speed or to scale up to larger, more complex, physical systems.
+\todo{quote types, Maisy says single, maybe smaller sentence also}
+Automatic-differentiation techniques are a collection of computational methods for the determination of the derivatives of large classes of \enquote{regular}scientific code, doing so in an efficient and accurate manner. In contrast, the \SI{} is currently implemented using computer algebra systems such as SymPy \cite{sympy}, which represents and works with mathematical expressions symbolically, allowing for the computation of derivatives and integrals. These are general systems and are effective at working with a large range of expressions, but pose limitations when seeking to increase computational speed or to scale up to larger, more complex, physical systems.
 
-In this paper, we focus on taking the existing mathematical framework of the \SI{} and adapting it to use more advanced computational methods and making it amenable to \autodiff{} to enable a wide class of new applications. These range from scaling to larger systems, for example in molecular dynamics\todo{If I am going to use I need to cite}, to its use as the foundation several physics-based loss functions which we will compare for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight.
+In this paper, we focus on taking the existing mathematical framework of the \SI{} and adapting it to use more advanced computational methods. In addition, making it amenable to \autodiff{} which enables a wide class of new applications.
+These include scaling to larger systems, for example in molecular dynamics and condensed matter simulations, to its use as the foundation several physics-based loss functions. These loss functions will evaluated for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight, as discussed in the final part of the paper. \todo{Maisy wants to change/qualify insight}
 
 \section{Preliminaries}
 
