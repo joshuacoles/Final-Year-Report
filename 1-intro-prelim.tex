@@ -8,7 +8,7 @@ Thus it is the loss function that grounds the model in a given problem.
 The construction of loss functions varies across applications, but overall they exhibit some general characteristics as will be discussed.
 
 % Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
-\todo{check with DT about the wording of "canonical symplectic 2-form of the system"}
+%\todo{check with DT about the wording of "canonical symplectic 2-form of the system"}
 \SymI{}s are numerical integrators for Hamiltonian systems, which preserve the canonical symplectic 2-form of the system. 
 This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others.%
 \todo{Cite papers, some from DT2, some of my own}%
@@ -16,11 +16,11 @@ Consequentially, they will preserve, or near preserve, the constants of motion o
 
 The \SI{} (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of a symplectic integrator, which enables numerical integration of non-conservative systems. As with the symplectic integrators, this exhibits well-defined bounds in the fractional error of the energy, and other conserved quantities of the system. These are based on the non-conservative action approach developed by Galley \cite{galleyClassicalMechanicsNonconservative2013} and Galley \etall \cite{galleyPrincipleStationaryNonconservative2014}.
 
-\todo{quote types, Maisy says single, maybe smaller sentence also}
-Automatic-differentiation techniques are a collection of computational methods for the determination of the derivatives of large classes of \enquote{regular}scientific code, doing so in an efficient and accurate manner. In contrast, the \SI{} is currently implemented using computer algebra systems such as SymPy \cite{sympy}, which represents and works with mathematical expressions symbolically, allowing for the computation of derivatives and integrals. These are general systems and are effective at working with a large range of expressions, but pose limitations when seeking to increase computational speed or to scale up to larger, more complex, physical systems.
+Automatic-differentiation techniques are a collection of computational methods for the determination of the derivatives of large classes of \ensquote{regular}scientific code, doing so in an efficient and accurate manner. In contrast, the \SI{} is currently implemented using computer algebra systems such as SymPy \cite{sympy}, which represents and works with mathematical expressions symbolically, allowing for the computation of derivatives and integrals. These are general systems and are effective at working with a large range of expressions, but pose limitations when seeking to increase computational speed or to scale up to larger, more complex, physical systems.
 
 In this paper, we focus on taking the existing mathematical framework of the \SI{} and adapting it to use more advanced computational methods. In addition, making it amenable to \autodiff{} which enables a wide class of new applications.
-These include scaling to larger systems, for example in molecular dynamics and condensed matter simulations, to its use as the foundation of several physics-based loss functions. These loss functions will evaluated for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight, as discussed in the final part of the paper. \todo{Maisy wants to change/qualify insight}
+These include scaling to larger systems, for example in molecular dynamics and condensed matter simulations, to its use as the foundation of several physics-based loss functions. These loss functions will evaluated for empirical and theoretical suitability, with the goal that these could be used in the creation of machine learning models which encode physical knowledge and insight, as discussed in the final part of the paper.
+%\todo{Maisy wants to change/qualify insight}
 
 \section{Preliminaries}
 
@@ -86,7 +86,7 @@ This method was originally developed to account for the fact that while we often
 
 The form of this equation, as well as the visualisation shown in \fref{fig:nc-lagrange-virtual-paths}, shows we can consider this doubling as creating two paths, one forwards in time, the other backwards (and hence negative in \eqref{eq:nc-lag}), with both of these paths contribute with terms as the traditional conservative Lagrangian. There is also an additional term $K$, the non-conservative potential, representing a non-conservative coupling between the two paths (if it could be broken down cleanly into a form of $V(\vbq_1) - V(\vbq_2)$or similar, and thus being conservative, then these could be absorbed into $L$ leaving $K = 0$). In this way the system becomes a boundary value problem as needed, with both paths sharing the $\vbq_f$ point as one of their boundaries.
 
-To solve this system we follow in the same form as before, aiming to extremise a new action defined now in terms of $\Lambda$, however crucially we do so in what is known as the \enquote{physical limit} (P.L), where $\vbq_1 = \vbq_2$. This gives the non-conservative Euler Lagrange equation,
+To solve this system we follow in the same form as before, aiming to extremise a new action defined now in terms of $\Lambda$, however crucially we do so in what is known as the \ensquote{physical limit} (P.L), where $\vbq_1 = \vbq_2$. This gives the non-conservative Euler Lagrange equation,
 
 \begin{equation}
 	\label{eq:nc-el}
@@ -205,25 +205,23 @@ Continuing the consideration of Noether currents from prior sections, it can be 
 \label{sec:intro-pinn}
 
 Physics informed neural networks (PINNs) are neural networks which include physical knowledge in their training processes \cite{raissiPhysicsInformedDeep2017}.
-Their most common application is in solving partial differential equations (PDEs) \cite{luDeepXDEDeepLearning2021,mengCompositeNeuralNetwork2020} where we take physically derived knowledge of the system as a prior in training and train the neural network with a loss function incorporating the residuals from the initial and boundary conditions (loss functions will be discussed in more depth in \sref{sec:intro-lf}).
+Their most common application is in solving partial differential equations (PDEs) \cite{luDeepXDEDeepLearning2021,mengCompositeNeuralNetwork2020} where we take physically derived knowledge of the system as a prior when constructing our ML model. For example, one could train the neural network with a loss function incorporating the residuals from the initial and boundary conditions to (loss functions will be discussed in more depth in \sref{sec:intro-lf}).
 
-Neural networks more generally are a collection of linear and non-linear components composed together to form complex non-linear functions. At their base level the linear components can be expressed as the simple linear equation \(\vb{y} = W\vb{x} + \vb{b}\) where $W$ is a matrix of weights for this component and $\vb{b}$ the biases. The non-linear components are functions such as sigmoid or $\tanh$ which stop collapse to linearity for the whole composition, allowing for non-trivial behaviour. These weights, biases, and other variables within the model constitute the model's \emph{parameters}.
+Neural networks more generally are a collection of linear and non-linear components composed together to form complex non-linear functions. At their base level the linear components can be expressed as the simple linear equation \(\vb{y} = W\vb{x} + \vb{b}\) where $\vb x$ is the input for this component, $W$ is a matrix of weights and $\vb{b}$ an offset with components known as biases. The non-linear components are functions such as sigmoid or $\tanh$, which introduce non-linearity into the model, allowing for non-trivial behaviour. Without these non-linear components the whole model could be expressed as a single linear operation. Collectively, these weights, biases, and other variables within the model constitute the model's \emph{parameters}.
 
 This composition is useful as it can be shown that, with sufficient complexity, these forms are dense in the space of Borel measurable functions and hence can take the place of almost any physical function or mathematical procedure \cite{hornikMultilayerFeedforwardNetworks1989}.
 
 \subsection{Loss functions}
 \label{sec:intro-lf}
 
-The primary method of training ML models involves the construction of a loss function or equivalently reward function. This frames the training process as a high-dimensionality optimisation problem. In this setting, the various parameters of the model are varied such as to minimise the aggregate loss of the model's action over a large collection of inputs when compared to known corresponding outputs. It is thus the loss function that grounds the model in a given problem. Their construction varies but they exhibit some general characteristics as will be discussed.
-
-
-Loss functions are the primary learning method of neural networks and, in PINNs, act as the place where physics steps in to connect our computational model to reality. As mentioned they are used to construct a high-dimensionality optimisation problem where we seek to minimise arbitrary loss value computed from the parameters, aggregated over a large collection of inputs when compared to known corresponding outputs.
+The primary method of training ML models involves the construction of a loss function or equivalently a reward function, this frames the training process as a high-dimensionality optimisation problem. In this setting, the parameters of the model are varied so as to minimise the aggregate loss of the model's action over a large collection of inputs when compared to known corresponding outputs. It is thus the loss function that grounds the model in a given problem, in PINNs, where physics steps in to connect our computational model to reality. Their construction varies but they exhibit some general characteristics as will be discussed.
 
 A loss function traditionally takes the form, $\mathrm{loss} = f(y_{\text{true}}, y_{\text{pred}})$ where $f$ is some chosen function and $y_{\text{pred}}$ and $y_{\text{true}}$ are both real vectors in the output space of the model, representing the known models output and the known true output respectively.
 
-Loss functions in PINNs are often comprised of two components. First there is the prediction or physical loss which may, as mentioned, be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Secondly there a regularisation loss term which helps to penalise overfitting to the training data, expressed as \enquote{complexity}, within the model. This might be implemented as an $L^2$ of a vector containing all parameters of the model.
+Loss functions in PINNs are often comprised of two components. First, there is the prediction or physical loss which may, as mentioned, be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Second, there is a regularisation loss term which helps to penalise overfitting to the training data, expressed as \ensquote{complexity}, within the model. This might be implemented as an $L^2$ of a vector containing all parameters of the model.
+\columnsep
 
-Optimising this loss function can be thought of as a traditional minimisation problem, with common choices of the method being Stochastic gradient descent and Adam \cite{kingmaAdamMethodStochastic2017}. These impose various requirements on the loss function, for example generally that it is differentiable \footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, Lipschitz continuity, and convexity \cite{sraOptimizationMachineLearning2012}. The rate at which these methods apply gradient based updates is determined by a provided learning rate, which will often be varied through training to quickly move towards minima during the initial stages, then tuned down to avoid \enquote{jumping} over the minima as we close in on the optimal solution.
+Stochastic gradient descent and Adam \cite{kingmaAdamMethodStochastic2017} are both common choices of optimisation algorithm used loss-function based training. These impose various requirements on the loss function, for example that it is differentiable \footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, and convexity \cite{sraOptimizationMachineLearning2012}. The rate at which these methods apply gradient based updates is determined by a provided learning rate. This will often be varied through training to quickly move towards minima during the initial stages, then tuned down to avoid \ensquote{jumping} over the minima as we close in on the optimal solution.
 
 \subsection{Lagrangian Embeddings}
 
@@ -233,18 +231,18 @@ To work with non-conservative Lagrangians $\Lambda$ computationally, for example
   E: \R^n \to \mathbb{L}
 \end{equation}
 
-where $E$ is known as an \enquote{embedding function} and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. 
-The choice of embedding necessarily restricts and dictates the systems which the system can deal with, and hence our choice of embedding is crucial, discussions of different embeddings used in this paper can be found in \sref{sec:eg-sys}.
+where $E$ is known as an \ensquote{embedding function} and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. 
+The choice of embedding necessarily restricts and dictates the physical systems which the model can deal with, and hence our choice of embedding is crucial. Discussions of different embeddings used in this paper can be found in \sref{sec:eg-sys}.
 
-There are two broad approaches to designing an embedding function. Either one can be chosen to represent a specific system by its physical parameters, or a more broad class of systems can be represented by some arbitrary function approximation scheme such as Fourier series or Taylor expansion around a point.
+There are two broad approaches to designing an embedding function. Either one can be chosen to represent a specific system by its physical parameters, or a more broad class of systems can be represented by some arbitrary function approximation scheme, such as Fourier series or Taylor expansion around a point.
 
-It should be noted that these embeddings often will not have a unique correspondence with physical Lagrangians, ie the map is not injective up to physical behaviour. This has implications for optimisation in creating multiple minima as will be discussed.
+It should be noted that these embeddings often will not have a unique correspondence with physical Lagrangians, ie the map is not injective up to physical behaviour. This has implications for optimisation in creating multiple minima, as will be discussed.
 
 \subsection{Automatic-Differentiation, XLA, and Google's JAX}
 \label{sec:intro-autodiff}
 
-Automatic-differentiation is the process of computing the differential of \enquote{regular} code with respect to one or more of its arguments. Google's JAX library \cite{jax2018github} contains one implementation of this in Python which works by passing \enquote{tracers} into the Python code that record the actions done to them such that an overall differential can be calculated.
+Automatic-differentiation is the process of computing the differential of \ensquote{regular} code with respect to one or more of its arguments. Google's JAX library \cite{jax2018github} contains one implementation of this in Python which works by passing \ensquote{tracers} into the Python code that record the actions done to them such that an overall differential can be calculated.
 
-JAX also incorporates the XLA (Accelerated Linear Algebra) library \cite{openxla-xla} where it uses similar tracing methods to translate a restricted, but large, subset of Python code into a series of low-level efficient operations which can be executed at speed on the GPU or CPU.
+JAX also incorporates the XLA (Accelerated Linear Algebra) library \cite{openxla-xla}, where it uses similar tracing methods to translate a restricted, but large, subset of Python code into a series of low-level efficient operations which can be executed at speed on the GPU or CPU.
 
-These two technologies together show great promise in the fields of machine learning and physics simulation as they allow for code that would previously have to be written in low-level languages such as C or C++ to be expressed in Python with significantly reduced overhead at runtime, and easier use by researchers.
+These two technologies together show great promise in the fields of machine learning and physics simulation, as they allow for code that would previously have to be written in low-level languages, such as C or C++, to be expressed in Python which makes high performance simulations much easier to develop and iterate on.

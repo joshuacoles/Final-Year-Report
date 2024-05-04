@@ -13,14 +13,14 @@ This is not the case for the fractional momenta error however as fixed-time-step
 
 \begin{figure}[t]
   \includegraphics[width=\columnwidth]{figures/dho_n_runtime.pdf}
-  \caption{A comparison of running a damped harmonic oscillator system for various numbers of iterations, with $r = 2, \Delta t = 0.1$. The \updimpl{} runtime is split into two components where \enquote{JIT time} represents the one time fixed cost of compiling the function (see \sref{sec:intro-autodiff}) and \enquote{Computation time} represents the actual time spent on computation.
-  Each value is a mean of 4 runs, with the \orgimpl{} being cut off early due after $> 20$ minutes runtime for the next sample.}
+  \caption{A comparison of running a damped harmonic oscillator system for various numbers of iterations, with $r = 2, \Delta t = 0.1$. The \updimpl{} runtime is split into two components where \ensquote{JIT time} represents the one time fixed cost of compiling the function (see \sref{sec:intro-autodiff}) and \enquote{Computation time} represents the actual time spent on computation.
+  Each value is the mean of 4 runs, with the \orgimpl{} being cut off early due after $> 20$ minutes runtime for the next sample.}
   \label{fig:dho-n-runtime}
 \end{figure}
 
 \begin{figure}[t]
   \includegraphics[width=\columnwidth]{figures/dho_r_runtime.pdf}
-  \caption{A comparison of running a damped harmonic oscillator system for various values of $r$, the order of the GGL quadrature, with $\Niter = 500, \Delta t = 0.1$. Each result being a mean of 4 independent runs.
+  \caption{A comparison of running a damped harmonic oscillator system for various values of $r$, the order of the GGL quadrature, with $\Niter = 500, \Delta t = 0.1$. Each result being the mean of 4 independent runs.
 	For both implementations we split the overall time into setup and computation as changing the method order requires re-discretising the Lagrangian and thus non-trivial work under both implementations.}
   \label{fig:dho-r-runtime}
 \end{figure}
@@ -33,26 +33,5 @@ In addition we note that the fixed cost JIT compilation remains roughly constant
 This pattern is seen also in \fref{fig:dho-r-runtime} when investigating the time-complexity in the order of the method. Again the JIT time remains roughly constant across the domain tested, and though it starts out initially higher than than the \orgimpl{}'s setup costs, the \orgimpl{}'s computation time quickly swamps this fixed cost.
 Similar to the behaviour in $\Niter$, the computation time for the \updimpl{} is also linear $r$ , remaining insignificant in the overall runtime. This is in comparison with the \orgimpl{} where the setup time grows as $\Or(r^n)$ with $n = {2.31 \pm 0.15}$ and the computation time as $\Or(r^m)$ with $m={1.490 \pm 0.070}$.
 
-%TODO: How do we report sig. fig again?
-
 It should be noted that while increasing the order of the method will increase the precision, at higher orders we start encountering limitations with the fixed precision \texttt{float64} type used for calculation in the \updimpl{} compared the the arbitrary precision numerics employed in the \orgimpl{}.
 Still however this represents an overall improvement in accuracy in physically meaningful simulations as the required precision could be more readily attained by decreasing $\Delta t$ rather than increasing $r$, avoiding the blowup of runtime observed in the \orgimpl{}, or the degradation of precision at high $r$ in the \updimpl{}. This is discussed further in \sref{sec:results-si}
-
-%TODO: This is where the lattice modelling will go.
-
-%To end the direct application of the \updimpl{} to physical systems we exploit its ability to work on large collections of similar systems, across different choices of physical parameters and initial conditions without incurring the fixed costs discussed prior. To display this we choose to simulate a large collection of double pendulums, with damping on the fixed pendulum, from different initial conditions to observe the chaotic behaviour as seen in \fref{fig:ddp}.
-
-%\begin{figure}[t]
-%  \label{fig:ddp}
-%  \includegraphics[width=\columnwidth]{figures/damped-double-pendulum.pdf}
-%  \caption{Phase space plots of $\theta_1$ and $\theta_2$ for a double pendulum, pendulum 1 fixed, and pendulum 2 attached to 1. Both pendulums have uniform densities and unit mass and lengths. The fixed pendulum has damping applied which can be seen by the general spiral inwards over the duration of the lines. TODO: This isnt the cleanest but I want a physical simulation, can I do better?}
-%\end{figure}
-
-%\begin{enumerate}
-%	\item Modelling of MD system
-%	\item PRD? for physics?
-%\end{enumerate}
-
-% We got X% speed up
-% TODO: This would be good to estimate. This means we can model Y% larger systems for Z% longer time frames
-
