@@ -28,17 +28,17 @@ Looking forwards, we noted that the use of fixed time steps in the method limits
 \subsection{PINN, Current and Future}
 
 The trained neural network represents a promising first step in predicting non-conservative Lagrangians from observational data successfully capturing the general characteristics of the data.
-During our experiments, we frequently observed predicted embeddings with values of roughly correct proportion, but off by a constant factor. This suggests that the 4 parameter embedding or other normalisation method may have been useful as the system was unable to move past this local minima in phase space, representing a sufficiently similar physical system.
+During our experiments, we frequently observed predicted embeddings with values of roughly correct proportion, but off by a constant factor. This suggests that the 4 parameter embedding or other normalisation method may have been useful as the model was unable to move past this local minima in phase space, representing a sufficiently similar physical system. \todo{say something about this}
 This poses questions on the handling of degeneracy in our Lagrangian space where multiple Lagrangians can result in the same physical system, especially within the image of any chosen embedding function, as this degeneracy will present issues when optimising within the space.
 
 Furthermore, we noted that the model was substantially more accurate with comparatively high masses. We theorise that this may be due to difficulties in fitting larger values of $\vbq$, possibly indicating the need for a larger and more varied dataset. It is important to acknowledge that this was a simplified test network, and we anticipate that future work will achieve improvements by utilising a larger parameter count and datasets.
 
 To enhance the model's performance, incorporating physically known a priori information into the loss function may be beneficial. For example, a stricter restriction on non-negativity for the DHO 3 parameters could be implemented by first taking the absolute value of the outputs as inputs to the Slimpletic Integrator. This would have the effect of cleanly solving the problem of non-physical embedding values, at the cost of introducing additional degeneracy into our space possible confusing the model.
 
-It should be noted however that this approach, and others like it, present a trade-off between specialising our embedding functions and loss functions towards particular physical systems where we have more physical knowledge and create models which are more widely applicable (for example through the use of Taylor series embedding functions).
+It should be noted however that this approach, and others like it, present a trade-off between specialising our embedding functions and loss functions towards a particular physical systems where we have more physical knowledge and create models which are more widely applicable (for example through the use of Taylor series embedding functions).
 Identifying physical laws that can be enforced in the Lagrangian would be a fruitful avenue for future research.
 
-In the same vein, a suitably trained neural network could be constructed using this method to identify symmetries in observational data or recognise patterns it has previously been exposed to in new observational data. This suggests potential applications in domains such as astrophysics, where there is a large availability of data to train a model, but also difficulties in obtaining a complete dataset for any one experiment.
+Following this theme, a suitably trained neural network could be constructed using this method to identify symmetries in observational data or recognise patterns it has previously been exposed to in new observational data. This suggests potential applications in domains such as astrophysics, where there is a large availability of data to train a model, but also difficulties in obtaining a complete dataset for any one experiment.
 
 \section{Conclusion}
 
