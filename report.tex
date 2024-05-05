@@ -8,7 +8,7 @@
 \newcommand{\orgimpl}{\textit{original implementation}}
 \newcommand{\updimpl}{\textit{updated implementation}}
 \newcommand{\Niter}{N_{\mathrm{iter}}}
-\newcommand{\etall}{{\it et al.~\/}\ }
+\newcommand{\etall}{{\it et al.}\ }
 \newcommand{\ensquote}[1]{`{#1}'}
 
 \begin{document}
@@ -17,7 +17,7 @@
 \author{J D Coles$^1$}
 \address{$^1$ Department of Physics, University of Bath, Claverton Down, Bath BA2 7AY, UK}
 \begin{abstract}
-The Slimplectic Integrator developed by Tsang et al. [1] provides fractional error bounds when integrating non-conservative Lagrangian systems. In this paper we present iterations on this method using modern computational techniques improving its computational performance by a factor of $\approx 10^4$, with a small fixed cost, for long-term integrations on the order of $\Niter \approx 10^6$ and orders $r < 40$. We present applications of this work to physically informed loss functions for identifying physical systems from observational data and use these in the training of a physics informed neural network. This network, when trained on damped harmonic oscillators, predicts Lagrangians that are accurate to an absolute RMS error of $\pm 5 \times 10^{-2}$ in $\vbq$ and $\pm 1 \times 10 ^{-1}$ in $\pi$.
+The Slimplectic Integrator developed by Tsang \textit{et al.}\ [1] provides fractional error bounds when integrating non-conservative Lagrangian systems. In this paper, we present iterations on this method using modern computational techniques improving its computational performance by a factor of $\approx 10^4$, with a small fixed cost, for long-term integrations on the order of $\Niter \approx 10^6$ and orders $r < 40$. We present applications of this work to physically informed loss functions for identifying physical systems from observational data and use these in the training of a physics-informed neural network. This network, when trained on damped harmonic oscillators, predicts Lagrangians that are accurate to an absolute RMS error of $\pm 5 \times 10^{-2}$ in $\vbq$ and $\pm 1 \times 10 ^{-1}$ in $\pi$.
 \end{abstract}
 }]
 
@@ -27,7 +27,7 @@ The Slimplectic Integrator developed by Tsang et al. [1] provides fractional err
 
 \ack
 
-My gratitude is given to my project partner Aengus Roberts who was a guiding light throughout the project, and who spent many hours designing, training and monitoring the network. Without him this would not have been possible. I would also like to thank Dr David Tsang for his constant support and discussion as we have moved through this project. 
+My gratitude is given to my project partner Aengus Roberts who was a guiding light throughout the project, and who spent many hours designing, training and monitoring the network. Without him, this would not have been possible. I would also like to thank Dr David Tsang for his constant support and discussion as we have moved through this project. 
 
 \section*{References}
 \bibliographystyle{iopart-num}

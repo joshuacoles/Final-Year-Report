@@ -47,7 +47,7 @@ Taking this \updimpl{} we then explore its different uses as a loss function for
 While these are distinct components of the model, they are heavily linked, as ideally, we would define the physical components of our loss function primarily in terms of the trajectories, rather than the values of the embedding vector for the non-conservative Lagrangian itself.
 Hence the embedding function and Slimplectic integrator must be chained together, before the physical loss component, to provide it with the trajectories.
 
-We consider a number of choices for these two functions, comparing their behaviour near known minima, and looking for convexity and smoothness. In addition we also empirically test the suitability of these spaces for optimisation, by directly performing gradient descent to the loss function + embedding composition attempting to converge to a known embedding.
+We consider a number of choices for these two functions, comparing their behaviour near known minima, and looking for convexity and smoothness. In addition, we also empirically test the suitability of these spaces for optimisation, by directly performing gradient descent to the loss function + embedding composition attempting to converge to a known embedding.
 
 \subsection{Loss Function in the Training of PINNs}
 
