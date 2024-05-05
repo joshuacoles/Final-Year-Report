@@ -129,7 +129,7 @@ We now turn to the discretisation method itself. This is done using the Galerkin
 
 % NOTE: Orders defined here
 
-where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. For a given choice of $r$ this provides slimpletic maps that are accurate up an order $2r + 2$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}. In turn we also define $\vbq_n^{(i)} = \vbq(t^{(i)}_n)$ to be the value of each sub-path at each $t^{(i)}_n$, which we label interior points. This process can be seen visually in \fref{fig:si-process}.
+where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. For a given choice of $r$ this provides slimplectic maps that are accurate up an order $2r + 2$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}. In turn we also define $\vbq_n^{(i)} = \vbq(t^{(i)}_n)$ to be the value of each sub-path at each $t^{(i)}_n$, which we label interior points. This process can be seen visually in \fref{fig:si-process}.
 
 \begin{figure}[t]
   \includegraphics[width=\columnwidth]{figures/si-process.pdf}

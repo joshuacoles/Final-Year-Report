@@ -1,4 +1,4 @@
-\subsection{Improvements to the Slimpletic Integrator and their Physical Applications}
+\subsection{Improvements to the Slimplectic Integrator and their Physical Applications}
 \label{sec:results-si}
 
 \begin{figure}[t]
@@ -9,7 +9,7 @@
 
 As discussed we first verify that the \updimpl{} retains required fractional error bounds of the formal method. This can be seen in \fref{fig:dho_energy_bounds} where the fractional error of the \updimpl{} with respect to that of the true analytic solution is compared directly against that of Runge-Kutta order 2 and 4. We clearly observe that the fractional energy error remains bounded across the timeframe of iteration.
 This successfully replicated the behaviour of the original implementation to an absolute root mean squared residual over the simulation duration of $\Delta = 1.42 \times 10^{-13}$ and $\Delta = 4.50 \times 10^{-12}$ for $r = 2$ and $r = 4$ respectively.
-This is not the case for the fractional momenta error however as fixed-time-step variational methods such as those implemented cannot be both slimpletic-momentum and momentum-energy preserving \cite{zhongLiePoissonHamiltonJacobiTheory1988}.
+This is not the case for the fractional momenta error however as fixed-time-step variational methods such as those implemented cannot be both slimplectic-momentum and momentum-energy preserving \cite{zhongLiePoissonHamiltonJacobiTheory1988}.
 
 \begin{figure}[t]
   \includegraphics[width=\columnwidth]{figures/dho_n_runtime.pdf}
