@@ -27,15 +27,15 @@ for a system with mass $m$, spring constant $k$, damping constant $\lambda$ and 
 
 \subsection{Improvements to the \SI{} and their Physical Applications}
 
-Initially the existing \texttt{slimplectic} codebase from Tsang \etall \cite{originalCode}, which we will refer to as the \orgimpl{}, was rewritten using the JAX framework, known as the \updimpl{}. We chose two key metrics, run-time duration and accuracy, to judge our model against the \orgimpl{} and Runge-Kutta to various orders.
+Initially, the existing \texttt{slimplectic} codebase from Tsang \etall \cite{originalCode}, which we will refer to as the \orgimpl{}, was rewritten using the JAX framework, known as the \updimpl{}. We chose two key metrics, run-time duration and accuracy, to judge our model against the \orgimpl{} and Runge-Kutta to various orders.
 
 First, to ensure that we maintained the error bounds expected for our model (as per \sref{sec:intro-si}) we compared the fractional energy and momentum error for Runge-Kutta, the \orgimpl{}, and the \updimpl{} across the time evolution of a physical system.
 
-Next we create two test-cases to measure performance of the integrator and its consequences on experimental capability. These were,
+Next, we create two test cases to measure the performance of the integrator and its consequences on experimental capability. These were,
 
 \begin{enumerate}
 	\item Modelling systems for different timespans varying the number of iterations performed by the integrator.
-	\item Modelling the same system across different orders of integration $r$ to determine how the order of our method effects the performance.
+	\item Modelling the same system across different orders of integration $r$ to determine how the order of our method affects the performance.
 \end{enumerate}
 
 These are designed to test the scaling behaviours of our model to provide insight into its applicability to larger systems.
@@ -44,13 +44,13 @@ These are designed to test the scaling behaviours of our model to provide insigh
 
 Taking this \updimpl{} we then explore its different uses as a loss function for physical systems, in combination with different embedding functions.
 
-While these are distinct components of the model, they are heavily linked, as ideally we would define the physical components of our loss function primarily in terms of the trajectories, rather than the values of the embedding vector for the non-conservative Lagrangian itself.
+While these are distinct components of the model, they are heavily linked, as ideally, we would define the physical components of our loss function primarily in terms of the trajectories, rather than the values of the embedding vector for the non-conservative Lagrangian itself.
 Hence the embedding function and Slimplectic integrator must be chained together, before the physical loss component, to provide it with the trajectories.
 
-We consider a number of choices for these two functions, comparing their behaviour near known minima, looking for convexity and smoothness. In addition we also empirically test the suitability of these spaces for optimisation, by directly performing gradient descent to the loss function + embedding composition attempting to converge to a known embedding.
+We consider a number of choices for these two functions, comparing their behaviour near known minima, and looking for convexity and smoothness. In addition we also empirically test the suitability of these spaces for optimisation, by directly performing gradient descent to the loss function + embedding composition attempting to converge to a known embedding.
 
 \subsection{Loss Function in the Training of PINNs}
 
 Finally, we employ a loss and embedding function combination to a, simplified, stand-in neural network, observing the correctness of the outputs.
 
-This model was based on the long short-term memory (LSTM) layer \cite{hochreiterLongShortTermMemory1997} which is frequently used in time-series analysis, and thus chosen as a suitable basis of our model. This involves generating large datasets of different physical systems within the domain of the chosen embedding as will be discussed.
+This model was based on the long short-term memory (LSTM) layer \cite{hochreiterLongShortTermMemory1997} which is frequently used in time-series analysis, and thus chosen as a suitable basis for our model. This involves generating large datasets of different physical systems within the domain of the chosen embedding as will be discussed.

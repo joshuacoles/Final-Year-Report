@@ -8,7 +8,7 @@ Thus it is the loss function that grounds the model in a given problem.
 The construction of loss functions varies across applications, but overall they exhibit some general characteristics as will be discussed.
 
 \SymI{}s are numerical integrators for Hamiltonian systems, which preserve the canonical symplectic 2-form of the system. 
-This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others\cite{gladmanSymplecticIntegratorsLongterm1991,wisdomSymplecticMapsNbody1991}.Consequentially, they will preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
+This makes them widely applicable to physical fields such as orbital dynamics and molecular dynamics, among others\cite{gladmanSymplecticIntegratorsLongterm1991,wisdomSymplecticMapsNbody1991}. Consequentially, they will preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
 
 The \SI{} (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of a symplectic integrator, which enables numerical integration of non-conservative systems. As with the symplectic integrators, this exhibits well-defined bounds in the fractional error of the energy, and other conserved quantities of the system. These are based on the non-conservative action approach developed by Galley \cite{galleyClassicalMechanicsNonconservative2013} and Galley \etall \cite{galleyPrincipleStationaryNonconservative2014}.
 
@@ -31,7 +31,7 @@ As it is traditionally phrased it works to solve the problem of determining the 
   S[\vb{q}] = \int_{t_i}^{t_f} L(\vb{q}, \dot{\vb{q}}, t) \rdd t
 \end{equation}
 
-where $S$ is known as the action of the system, $\dot\vbq$ is the standard time derivative of the system's path, and $L$ the Lagrangian. The Lagrangian being traditionally made up of two components $T$, the kinetic energy of the system in some configuration at some time, and $V$, the potential energy of the system. These are combined as,
+where $S$ is known as the action of the system, $\dot\vbq$ is the standard time derivative of the system's path, and $L$ the Lagrangian. The Lagrangian is traditionally made up of two components $T$, the kinetic energy of the system in some configuration at some time, and $V$, the potential energy of the system. These are combined as,
 
 \begin{equation}
   \label{eq:trad-lag}
@@ -69,7 +69,7 @@ Lagrangian mechanics as discussed applies only to conservative systems. While th
 
 \begin{figure}[t]
   \includegraphics[width=\columnwidth]{figures/qif-two-paths.pdf}
-  \caption{A cartoon based on a similar figure from \cite{galleyClassicalMechanicsNonconservative2013} showing the two virtual paths. We can see that the two paths initiate at their respective initial configurations $\vbq_{i,\set{1,2}}$ at time $t_i$ and are connected by the final configuration $\vbq_f$ at $t_f$. This final configuration is unknown and is allowed to vary within the problem (depicted as two alternative values shown in pale either side), depending on the value of $\vbq_{i,\set{1,2}}$. which are fixed during extremisation (displayed in grey). In this manner the problem's boundary resides purely in the $t = t_i$ plane where physical information is known. As shown the physical limit (P.L.) consists of bringing the two virtual paths together such as $\vbq_{i, 1} = \vbq_{i, 2}$.}
+  \caption{A cartoon based on a similar figure from \cite{galleyClassicalMechanicsNonconservative2013} showing the two virtual paths. We can see that the two paths initiate at their respective initial configurations $\vbq_{i,\set{1,2}}$ at time $t_i$ and are connected by the final configuration $\vbq_f$ at $t_f$. This final configuration is unknown and is allowed to vary within the problem (depicted as two alternative values shown in pale either side), depending on the value of $\vbq_{i,\set{1,2}}$. which are fixed during extremisation (displayed in grey). In this manner, the problem's boundary resides purely in the $t = t_i$ plane where physical information is known. As shown the physical limit (P.L.) consists of bringing the two virtual paths together such as $\vbq_{i, 1} = \vbq_{i, 2}$.}
   \label{fig:nc-lagrange-virtual-paths}
 \end{figure}
 
@@ -80,7 +80,7 @@ This method was originally developed to account for the fact that while we often
   \Lambda = L(\vbq_1, \dot\vbq_1, t) - L(\vbq_1, \dot\vbq_1, t) + K(\vbq_1, \vbq_2, \dot\vbq_1, \dot\vbq_2, t).
 \end{equation}
 
-The form of this equation, as well as the visualisation shown in \fref{fig:nc-lagrange-virtual-paths}, shows we can consider this doubling as creating two paths, one forwards in time, the other backwards (and hence negative in \eqref{eq:nc-lag}), with both of these paths contribute with terms as the traditional conservative Lagrangian. There is also an additional term $K$, the non-conservative potential, representing a non-conservative coupling between the two paths (if it could be broken down cleanly into a form of $V(\vbq_1) - V(\vbq_2)$or similar, and thus being conservative, then these could be absorbed into $L$ leaving $K = 0$). In this way the system becomes a boundary value problem as needed, with both paths sharing the $\vbq_f$ point as one of their boundaries.
+The form of this equation, as well as the visualisation shown in \fref{fig:nc-lagrange-virtual-paths}, shows we can consider this doubling as creating two paths, one forwards in time, the other backwards (and hence negative in \eqref{eq:nc-lag}), with both of these paths contribute with terms as the traditional conservative Lagrangian. There is also an additional term $K$, the non-conservative potential, representing a non-conservative coupling between the two paths (if it could be broken down cleanly into a form of $V(\vbq_1) - V(\vbq_2)$or similar, and thus being conservative, then these could be absorbed into $L$ leaving $K = 0$). In this way, the system becomes a boundary value problem as needed, with both paths sharing the $\vbq_f$ point as one of their boundaries.
 
 To solve this system we follow in the same form as before, aiming to extremise a new action defined now in terms of $\Lambda$, however crucially we do so in what is known as the \ensquote{physical limit} (P.L), where $\vbq_1 = \vbq_2$. This gives the non-conservative Euler Lagrange equation,
 
@@ -89,7 +89,7 @@ To solve this system we follow in the same form as before, aiming to extremise a
   	\left[\frac{\p \Lambda}{\p q_i} - \frac{\dd}{\dd t}\frac{\p \Lambda}{\p \dot q_i}\right]_{\text{P.L}} = 0
 \end{equation}
 
-In practical considerations it is often useful to alter our choice of variables to instead be $\vbq_+ = {(\vbq_1 + \vbq_2)}/{2}$ and $\vbq_- = \vbq_1 - \vbq_2$. This reduced our P.L. condition to simply $\vbq_- \to \vb 0$. Note that only the Euler-Lagrange equation involving differentiating wrt. $\vbq_-$ survives. We can of course also define a corresponding conjugate momenta,
+In practical considerations, it is often useful to alter our choice of variables to instead be $\vbq_+ = {(\vbq_1 + \vbq_2)}/{2}$ and $\vbq_- = \vbq_1 - \vbq_2$. This reduced our P.L. condition to simply $\vbq_- \to \vb 0$. Note that only the Euler-Lagrange equation involving differentiating wrt. $\vbq_-$ survives. We can of course also define a corresponding conjugate momenta,
 
 \begin{equation}
   \pi_{\mp, i} = \frac{\p \Lambda}{\p q_{\pm,i}}.
@@ -102,7 +102,7 @@ A corresponding form of Noether's theorem can be shown to hold for these non-con
 
 The \SI{} is an extension of a symplectic integrator to non-conservative Lagrangian mechanics, symplectic integrators being those which preserve the canonical symplectic 2-form of the system $dp \wedge dq$, and thus preserve many desired properties during integration.
 
-Hence, to understand the \SI{} method we first consider the application of a symplectic integrators to a traditional conservative system\footnote{This explanation takes its path from an unpublished paper by Tsang \etall \cite{tsangVariationalSymplecticIntegrators}}. As before consider a system with $N$ degrees of freedom represented by some $\vbq \in \R^N$, governed by some Lagrangian, $L(\vbq, \dot{\vbq}, t) \in \R$.
+Hence, to understand the \SI{} method we first consider the application of a symplectic integrator to a traditional conservative system\footnote{This explanation takes its path from an unpublished paper by Tsang \etall \cite{tsangVariationalSymplecticIntegrators}}. As before consider a system with $N$ degrees of freedom represented by some $\vbq \in \R^N$, governed by some Lagrangian, $L(\vbq, \dot{\vbq}, t) \in \R$.
 
 With this set up we now choose to apply two successive procedures to our extremal path $\vb q(t)$: first piecewise breakdown and then discretisation of the action itself. It is this ordering that differentiates this symplectic method from more traditional integrators such as Runge-Kutta \cite{devriesFirstCourseComputational2011} which solve similar systems by discretising the final equations of motion themselves rather than the action, before equations of motion are formed.
 
@@ -115,7 +115,7 @@ To start we break the trajectory down piecewise into a collection of $M$ sub-pat
 	\end{cases}
 \end{equation}
 
-between the total path and sub-paths for all $t \in [t_i, t_f]$. These paths define a collection of points $\vb q_{n \in [M]}$ which are their mutual values at the piecewise break points (which we required to be equal) and the initial and final values for $n = 0$ and $n = M$ respectively.
+between the total path and sub-paths for all $t \in [t_i, t_f]$. These paths define a collection of points $\vb q_{n \in [M]}$ which are their mutual values at the piecewise breakpoints (which we required to be equal) and the initial and final values for $n = 0$ and $n = M$ respectively.
 
 As each piecewise curve constitutes in and of itself a physically attained trajectory we can state that any path $\vb{q}(t)$ which extremises the action for the whole timespan, must also extremise each piecewise portion, and visa-versa. 
 
@@ -129,7 +129,7 @@ We now turn to the discretisation method itself. This is done using the Galerkin
 
 % NOTE: Orders defined here
 
-where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. For a given choice of $r$ this provides slimplectic maps that are accurate up an order $2r + 2$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}. In turn we also define $\vbq_n^{(i)} = \vbq(t^{(i)}_n)$ to be the value of each sub-path at each $t^{(i)}_n$, which we label interior points. This process can be seen visually in \fref{fig:si-process}.
+where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. For a given choice of $r$, this provides slimplectic maps that are accurate up an order $2r + 2$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}. In turn we also define $\vbq_n^{(i)} = \vbq(t^{(i)}_n)$ to be the value of each sub-path at each $t^{(i)}_n$, which we label interior points. This process can be seen visually in \fref{fig:si-process}.
 
 \begin{figure}[t]
   \includegraphics[width=\columnwidth]{figures/si-process.pdf}
@@ -137,7 +137,7 @@ where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of t
   \label{fig:si-process}
 \end{figure}
 
-We now approximate the path of the system within this quadrature using the associated cardinal functions for the GGL quadrature, labelled $\phi(t)$, as \(\vb q(t) = \phi(t) + \Or((\Delta t)^{r + 2})\). These provide a suitable approximation for the path derivative $\dot{\vb q}$ by the use the derivative matrix,
+We now approximate the path of the system within this quadrature using the associated cardinal functions for the GGL quadrature, labelled $\phi(t)$, as \(\vb q(t) = \phi(t) + \Or((\Delta t)^{r + 2})\). These provide a suitable approximation for the path derivative $\dot{\vb q}$ by the use of the derivative matrix,
 
 \begin{equation}
 \label{eq:dij}
@@ -155,7 +155,7 @@ which provides that,
   \dot\phi(t_n^{(i)}) = \sum_{j = 0}^{r + 1} D_{ij}q_n^{(j)}.
 \end{equation}
 
-In turn this allows to express the integral as,
+In turn, this allows us to express the integral as,
 
 \begin{equation}
 \label{eq:discr-action-1}
@@ -195,15 +195,15 @@ and a continuity constraint that they both be equal at these mutual overlap poin
 
 This derivation is provided in terms of the traditional conservative Lagrangian $L$ however can be readily adapted to the non-conservative Lagrangian formalism discussed in \sref{sec:intro-nc-actions} by considering instead the non-conservative Euler-Lagrange Equation \eqref{eq:nc-el}, in effect substituting $L$ for the non-conservative Lagrangian $\Lambda$ and $\vb q_n$ for $\vb q_{n, -}$.
 
-Continuing the consideration of Noether currents from prior sections, it can be shown that the continuous symmetries of the conservative action evolve as due to this now discretised $K_d$. It should be noted that GGL discretisation does not preserve time-shift symmetry, and hence energy is non conserved under the operation, however we will show, in line with previous work \cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}, that the fractional error is generally bounded over the integration.
+Continuing the consideration of Noether currents from prior sections, it can be shown that the continuous symmetries of the conservative action evolve as due to this now discretised $K_d$. It should be noted that GGL discretisation does not preserve time-shift symmetry, and hence energy is not conserved under the operation, however, we will show, in line with previous work \cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}, that the fractional error is generally bounded over the integration.
 
 \subsection{Physics Informed Neural Networks}
 \label{sec:intro-pinn}
 
-Physics informed neural networks (PINNs) are neural networks which include physical knowledge in their training processes \cite{raissiPhysicsInformedDeep2017}.
+Physics-informed neural networks (PINNs) are neural networks which include physical knowledge in their training processes \cite{raissiPhysicsInformedDeep2017}.
 Their most common application is in solving partial differential equations (PDEs) \cite{luDeepXDEDeepLearning2021,mengCompositeNeuralNetwork2020} where we take physically derived knowledge of the system as a prior when constructing our ML model. For example, one could train the neural network with a loss function incorporating the residuals from the initial and boundary conditions to (loss functions will be discussed in more depth in \sref{sec:intro-lf}).
 
-Neural networks more generally are a collection of linear and non-linear components composed together to form complex non-linear functions. At their base level the linear components can be expressed as the simple linear equation \(\vb{y} = W\vb{x} + \vb{b}\) where $\vb x$ is the input for this component, $W$ is a matrix of weights and $\vb{b}$ an offset with components known as biases. The non-linear components are functions such as sigmoid or $\tanh$, which introduce non-linearity into the model, allowing for non-trivial behaviour. Without these non-linear components the whole model could be expressed as a single linear operation. Collectively, these weights, biases, and other variables within the model constitute the model's \emph{parameters}.
+Neural networks more generally are a collection of linear and non-linear components composed together to form complex non-linear functions. At their base level the linear components can be expressed as the simple linear equation \(\vb{y} = W\vb{x} + \vb{b}\) where $\vb x$ is the input for this component, $W$ is a matrix of weights and $\vb{b}$ an offset with components known as biases. The non-linear components are functions such as sigmoid or $\tanh$, which introduce non-linearity into the model, allowing for non-trivial behaviour. Without these non-linear components, the whole model could be expressed as a single linear operation. Collectively, these weights, biases, and other variables within the model constitute the model's \emph{parameters}.
 
 This composition is useful as it can be shown that, with sufficient complexity, these forms are dense in the space of Borel measurable functions and hence can take the place of almost any physical function or mathematical procedure \cite{hornikMultilayerFeedforwardNetworks1989}.
 
@@ -212,11 +212,11 @@ This composition is useful as it can be shown that, with sufficient complexity, 
 
 The primary method of training ML models involves the construction of a loss function or equivalently a reward function, this frames the training process as a high-dimensionality optimisation problem. In this setting, the parameters of the model are varied so as to minimise the aggregate loss of the model's action over a large collection of inputs when compared to known corresponding outputs. It is thus the loss function that grounds the model in a given problem, in PINNs, where physics steps in to connect our computational model to reality. Their construction varies but they exhibit some general characteristics as will be discussed.
 
-A loss function traditionally takes the form, $\mathrm{loss} = f(y_{\text{true}}, y_{\text{pred}})$ where $f$ is some chosen function and $y_{\text{pred}}$ and $y_{\text{true}}$ are both real vectors in the output space of the model, representing the known models output and the known true output respectively.
+A loss function traditionally takes the form, $\mathrm{loss} = f(y_{\text{true}}, y_{\text{pred}})$ where $f$ is some chosen function and $y_{\text{pred}}$ and $y_{\text{true}}$ are both real vectors in the output space of the model, representing the model's output and the known true output respectively.
 
 Loss functions in PINNs are often comprised of two components. First, there is the prediction or physical loss which may, as mentioned, be made up of the residuals of the model under PDE, boundary, and initial conditions of the system. Second, there is a regularisation loss term which helps to penalise overfitting to the training data, expressed as \ensquote{complexity}, within the model. This might be implemented as an $L^2$ of a vector containing all parameters of the model.
 
-Stochastic gradient descent and Adam \cite{kingmaAdamMethodStochastic2017} are both common choices of optimisation algorithm used loss-function based training. These impose various requirements on the loss function, for example that it is differentiable \footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, and convexity \cite{sraOptimizationMachineLearning2012}. The rate at which these methods apply gradient based updates is determined by a provided learning rate. This will often be varied through training to quickly move towards minima during the initial stages, then tuned down to avoid \ensquote{jumping} over the minima as we close in on the optimal solution.
+Stochastic gradient descent and Adam \cite{kingmaAdamMethodStochastic2017} are both common choices for the optimisation algorithm used in loss-function based training. These impose various requirements on the loss function, for example, that it is differentiable \footnote{Although methods exist for non-differentiable functions \cite{daubechiesIterativeThresholdingAlgorithm2003}.} and benefits from other properties such as higher-order differentiability, and convexity \cite{sraOptimizationMachineLearning2012}. The rate at which these methods apply gradient-based updates is determined by a provided learning rate. This will often be varied through training to quickly move towards minima during the initial stages, then tuned down to avoid \ensquote{jumping} over the minima as we close in on the optimal solution.
 
 \subsection{Lagrangian Embeddings}
 
@@ -236,8 +236,8 @@ It should be noted that these embeddings often will not have a unique correspond
 \subsection{Automatic-Differentiation, XLA, and Google's JAX}
 \label{sec:intro-autodiff}
 
-Automatic-differentiation is the process of computing the differential of \ensquote{regular} code with respect to one or more of its arguments. Google's JAX library \cite{jax2018github} contains one implementation of this in Python which works by passing \ensquote{tracers} into the Python code that record the actions done to them such that an overall differential can be calculated.
+Automatic-differentiation is the process of computing the differential of \ensquote{regular} code with respect to one or more of its arguments. Google's JAX library \cite{jax2018github} contains one implementation of this in Python which works by passing \ensquote{tracers} into the Python code that records the actions done to them such that an overall differential can be calculated.
 
 JAX also incorporates the XLA (Accelerated Linear Algebra) library \cite{openxla-xla}, where it uses similar tracing methods to translate a restricted, but large, subset of Python code into a series of low-level efficient operations which can be executed at speed on the GPU or CPU.
 
-These two technologies together show great promise in the fields of machine learning and physics simulation, as they allow for code that would previously have to be written in low-level languages, such as C or C++, to be expressed in Python which makes high performance simulations much easier to develop and iterate on.
+These two technologies together show great promise in the fields of machine learning and physics simulation, as they allow for code that would previously have to be written in low-level languages, such as C or C++, to be expressed in Python which makes high-performance simulations much easier to develop and iterate on.
