@@ -7,12 +7,8 @@ In this setting, the parameters of the model are varied such as to minimise the 
 Thus it is the loss function that grounds the model in a given problem.
 The construction of loss functions varies across applications, but overall they exhibit some general characteristics as will be discussed.
 
-% Cite: https://en.wikipedia.org/wiki/Symplectic_integrator and DT's unpublished paper.
-%\todo{check with DT about the wording of "canonical symplectic 2-form of the system"}
 \SymI{}s are numerical integrators for Hamiltonian systems, which preserve the canonical symplectic 2-form of the system. 
-This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others.%
-\todo{Cite papers, some from DT2, some of my own}%
-Consequentially, they will preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
+This makes them widely applicable to physical fields such as orbital dynamics and  molecular dynamics, among others\cite{gladmanSymplecticIntegratorsLongterm1991,wisdomSymplecticMapsNbody1991}.Consequentially, they will preserve, or near preserve, the constants of motion of a system over a large number of integration steps.
 
 The \SI{} (SI)\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015} is a non-conservative extension of a symplectic integrator, which enables numerical integration of non-conservative systems. As with the symplectic integrators, this exhibits well-defined bounds in the fractional error of the energy, and other conserved quantities of the system. These are based on the non-conservative action approach developed by Galley \cite{galleyClassicalMechanicsNonconservative2013} and Galley \etall \cite{galleyPrincipleStationaryNonconservative2014}.
 
