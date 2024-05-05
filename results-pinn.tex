@@ -1,10 +1,10 @@
 \subsection{PINNs and Approximating Damped Harmonic Oscillators}
 
-Finally we applied these techniques to an PINN. For our initial explorations in this space we focused on fitting to systems of damped harmonic oscillators as has been the through line of the work thus far. We chose the 3 parameter DHO embedding over the 4 parameter embedding with a pre-factor as while DHO 4 was more effective when subject to direct gradient descent, we were concerned that the additional redundant embedding parameter would make learning the systems more complex and error prone.
+Finally, we applied these techniques to a PINN. For our initial explorations in this space, we focused on fitting to systems of damped harmonic oscillators as has been the through line of the work thus far. We chose the 3-parameter DHO embedding over the 4-parameter embedding with a pre-factor as while DHO 4 was more effective when subject to direct gradient descent, we were concerned that the additional redundant embedding parameter would make learning the systems more complex and error-prone.
 
-The dataset used ($N \approx 5 \times 10^5$) in training was a mixed selection, primarily it was comprised of uniformly distributed embeddings within the subset of the physical region of the embedding space (positive embedding values). In addition a fraction, approximately $5 \%$ for both, of the spring and damping constants were set to zero to ensure that the model was exposed to non-damped simple harmonic motion and kinetic-energy only systems.
+The dataset used in training ($N \approx 5 \times 10^5$) was a mixed selection. Primarily it was comprised of uniformly distributed embeddings within the subset of the physical region of the embedding space (positive embedding values). In addition a fraction, approximately $5 \%$ for both, of the spring and damping constants were set to zero to ensure that the model was exposed to non-damped simple harmonic motion and kinetic energy only systems.
 
-For PINN training, accounting for the increased complexity of the optimisation problem now being with respect to the parameters of the model, we made two alterations to our loss functions. First we added a strong weight against non-physical negative embedding values in our loss function, taking the form of,
+For PINN training, accounting for the increased complexity of the optimisation problem now being with respect to the parameters of the model, we made two alterations to our loss functions. First, we added a strong weight against non-physical negative embedding values in our loss function, taking the form of,
 
 \begin{equation}
   f(e_i) = \begin{cases}
@@ -14,7 +14,7 @@ For PINN training, accounting for the increased complexity of the optimisation p
 \end{equation}
 
 where $\delta = −0.1$ is a tolerance to allow for zero to be a non-penalised output and $\gamma \approx 10$ is the strength of the penalisation. This was done as the non-physical behaviour of negative embedding values is less visible when considering the larger whole model optimisation problem.
-In addition we also experimented with capping the values of the loss at large values to mitigate overflows when dealing with particularly bad fits, such as the initially random initialised weights before any training had commenced. Both of these alterations notably improved training stability and decreasing the probability of floating point related errors.
+In addition, we also experimented with capping the values of the loss at large values to mitigate overflows when dealing with particularly bad fits, such as the initially random initialised weights before any training had commenced. Both of these alterations notably improved training stability and decreased the probability of floating-point related errors.
 
 Model training was done in batches and was prone to explosion possibly due to the non-convexity in some regions as discussed in \sref{sec:res-lf}. Overall it was found that training could be made more stable by increasing batch sizes to $512$ from $32$, and manually tweaking learning rates and loss weightings (for example between the $\vb q$ and $\pi$ RMS terms where more progress was made with weighting towards $\vbq$ error to counteract observed larger tendency for error in this term) as training progressed.
 
