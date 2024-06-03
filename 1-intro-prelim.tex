@@ -31,7 +31,7 @@ As it is traditionally phrased it works to solve the problem of determining the 
   S[\vb{q}] = \int_{t_i}^{t_f} L(\vb{q}, \dot{\vb{q}}, t) \rdd t
 \end{equation}
 
-where $S$ is known as the action of the system, $\dot\vbq$ is the standard time derivative of the system's path, and $L$ the Lagrangian. The Lagrangian is traditionally made up of two components $T$, the kinetic energy of the system in some configuration at some time, and $V$, the potential energy of the system. These are combined as,
+\noindent where $S$ is known as the action of the system, $\dot\vbq$ is the standard time derivative of the system's path, and $L$ the Lagrangian. The Lagrangian is traditionally made up of two components $T$, the kinetic energy of the system in some configuration at some time, and $V$, the potential energy of the system. These are combined as,
 
 \begin{equation}
   \label{eq:trad-lag}
@@ -45,14 +45,14 @@ A physical solution is arrived at by then employing Hamilton's principle of leas
 	\frac{\p L}{\p q_i} - \frac{\dd}{\dd t}\frac{\p L}{\p \dot q_i} = 0
 \end{equation}
 
-for each generalised degree of $q_i$. To each we can also associate a conjugate momentum $p_i$ and generalised force $F_i$,
+\noindent for each generalised degree of $q_i$. To each we can also associate a conjugate momentum $p_i$ and generalised force $F_i$,
 
 \begin{align}
   p_i = \frac{\p L }{\p \dot q_i} \\
   F_i = \frac{\p L}{\p q_i}
 \end{align}
 
-such that Equation \eqref{eq:euler-lagrange} reads in line with Newton's second law, $F = \dot{p}_i$.
+\noindent such that Equation \eqref{eq:euler-lagrange} reads in line with Newton's second law, $F = \dot{p}_i$.
 
 The focus on symmetries within the formalism comes to the fore however when we consider Noether's Theorem \cite{noetherInvariantVariationProblems1971} which states that every continuous symmetry of the action $S$ has a corresponding conserved quantity. A simple example of this can be seen for degrees of freedom which are said to be \emph{cyclic} in that the coordinate value itself, $q_i$, does not appear directly in the Lagrangian. It can be readily seen from Equation \eqref{eq:euler-lagrange} that if this is the case then,
 
@@ -60,7 +60,7 @@ The focus on symmetries within the formalism comes to the fore however when we c
   \frac{\dd}{\dd t}\frac{\p L}{\p \dot q_i} = 0
 \end{equation}
 
-which implies that the conjugate momentum $p_i$ is a conserved quantity of the system.
+\noindent which implies that the conjugate momentum $p_i$ is a conserved quantity of the system.
 
 \subsection{Non-Conservative Actions}
 \label{sec:intro-nc-actions}
@@ -115,7 +115,7 @@ To start we break the trajectory down piecewise into a collection of $M$ sub-pat
 	\end{cases}
 \end{equation}
 
-between the total path and sub-paths for all $t \in [t_i, t_f]$. These paths define a collection of points $\vb q_{n \in [M]}$ which are their mutual values at the piecewise breakpoints (which we required to be equal) and the initial and final values for $n = 0$ and $n = M$ respectively.
+\noindent between the total path and sub-paths for all $t \in [t_i, t_f]$. These paths define a collection of points $\vb q_{n \in [M]}$ which are their mutual values at the piecewise breakpoints (which we required to be equal) and the initial and final values for $n = 0$ and $n = M$ respectively.
 
 As each piecewise curve constitutes in and of itself a physically attained trajectory we can state that any path $\vb{q}(t)$ which extremises the action for the whole timespan, must also extremise each piecewise portion, and visa-versa. 
 
@@ -129,7 +129,7 @@ We now turn to the discretisation method itself. This is done using the Galerkin
 
 % NOTE: Orders defined here
 
-where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. For a given choice of $r$, this provides slimplectic maps that are accurate up an order $2r + 2$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}. In turn we also define $\vbq_n^{(i)} = \vbq(t^{(i)}_n)$ to be the value of each sub-path at each $t^{(i)}_n$, which we label interior points. This process can be seen visually in \fref{fig:si-process}.
+\noindent where $i \in [r + 1]$ and $x_i$ are the ordered roots of the the derivative of the $(r + 1)$th Legendre polynomial $P_{r + 1}$ and $\Delta t = t_f - t_i$. For a given choice of $r$, this provides slimplectic maps that are accurate up an order $2r + 2$\cite{tsangSLIMPLECTICINTEGRATORSVARIATIONAL2015}. In turn we also define $\vbq_n^{(i)} = \vbq(t^{(i)}_n)$ to be the value of each sub-path at each $t^{(i)}_n$, which we label interior points. This process can be seen visually in \fref{fig:si-process}.
 
 \begin{figure}[t]
   \includegraphics[width=\columnwidth]{figures/si-process.pdf}
@@ -149,7 +149,7 @@ We now approximate the path of the system within this quadrature using the assoc
   \end{cases}
 \end{equation}
 
-which provides that,
+\noindent which provides that,
 
 \begin{equation}
   \dot\phi(t_n^{(i)}) = \sum_{j = 0}^{r + 1} D_{ij}q_n^{(j)}.
@@ -162,7 +162,7 @@ In turn, this allows us to express the integral as,
   \int_{t_n}^{t_{n + 1}} L(\vb q, \dot{\vb q}, t) \dd t \approx \sum_{i = 0}^{r + 1} w_i L(q_{n}^{(i)}, \dot\phi_{n}^{(i)}, t_{n}^{(i)})
 \end{equation}
 
-where the label the approximate expression $L_d^n$ and where $w_i$ are the quadrature weights given by
+\noindent where the label the approximate expression $L_d^n$ and where $w_i$ are the quadrature weights given by
 
 \begin{equation}
   w_i = \frac{\Delta t}{(r + 1)(r + 2)(P_{r + 1}(x_i))^2}.
@@ -226,7 +226,7 @@ To work with non-conservative Lagrangians $\Lambda$ computationally, for example
   E: \R^n \to \mathbb{L}
 \end{equation}
 
-where $E$ is known as an \ensquote{embedding function} and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. 
+\noindent where $E$ is known as an \ensquote{embedding function} and $\mathbb{L}$ is a subset of the overall function space of possible $\Lambda$ values. 
 The choice of embedding necessarily restricts and dictates the physical systems which the model can deal with, and hence our choice of embedding is crucial. Discussions of different embeddings used in this paper can be found in \sref{sec:eg-sys}.
 
 There are two broad approaches to designing an embedding function. Either one can be chosen to represent a specific system by its physical parameters, or a more broad class of systems can be represented by some arbitrary function approximation scheme, such as Fourier series or Taylor expansion around a point.
